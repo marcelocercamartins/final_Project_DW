@@ -30,3 +30,9 @@ C:\Git\final_Project_DW\API\apiApp\obj\Debug\net6.0\refint\apiApp.dll
 C:\Git\final_Project_DW\API\apiApp\obj\Debug\net6.0\apiApp.pdb
 C:\Git\final_Project_DW\API\apiApp\obj\Debug\net6.0\apiApp.genruntimeconfig.cache
 C:\Git\final_Project_DW\API\apiApp\obj\Debug\net6.0\ref\apiApp.dll
+C:\Git\final_Project_DW\API\apiApp\bin\Debug\net6.0\System.Web.Cors.dll
+C:\Git\final_Project_DW\API\apiApp\bin\Debug\net6.0\System.Net.Http.Formatting.dll
+C:\Git\final_Project_DW\API\apiApp\bin\Debug\net6.0\System.Web.Http.dll
+C:\Git\final_Project_DW\API\apiApp\bin\Debug\net6.0\System.Web.Http.Cors.dll
+C:\Git\final_Project_DW\API\apiApp\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Git\final_Project_DW\API\apiApp\bin\Debug\net6.0\Newtonsoft.Json.Bson.dll
