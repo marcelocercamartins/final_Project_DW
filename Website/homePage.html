@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 03</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="Styles/styleHome.css">
+</head>
+
+<body>
+    <header>
+        <div class="jumbotron text-center">
+            <h1>DW Lab03</h1>
+        </div>
+    </header>
+    <main>
+        <form>
+            <label>Get from api:<br />
+                <textarea name="story" cols="60" rows="4" id="story-input"></textarea>
+            </label>
+            <br>
+            <input type="button" value="Submit" class="btn btn-primary" id="submit-button" onclick="handleMyForm()">
+        </form>
+    </main>
+    <article>
+    </article>
+    <footer>
+    </footer>
+
+    <script>
+        function handleMyForm() {
+
+            const xhttpr = new XMLHttpRequest();
+            xhttpr.open('GET', 'https://localhost:7055/api/Persons', true);
+
+            xhttpr.send();
+
+            xhttpr.onload = () => {
+                if (xhttpr.status === 200) {
+                    const response = xhttpr.response;
+                    window.alert(response);
+                    // Process the response data here 
+                } else {
+                    window.alert("erro");
+                }
+            };
+
+        }
+    </script>
+</body>
+
+</html>
