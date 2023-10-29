@@ -21,7 +21,7 @@
     <main>
         <form>
             <label>Get from api:<br />
-                <textarea name="story" cols="60" rows="4" id="story-input"></textarea>
+                <input type ="text" name="story" cols="60" rows="4" id="story-input"></input>
             </label>
             <br>
             <input type="button" value="Submit" class="btn btn-primary" id="submit-button" onclick="handleMyForm()">
@@ -36,15 +36,14 @@
         function handleMyForm() {
 
             const xhttpr = new XMLHttpRequest();
-            xhttpr.open('GET', 'https://localhost:7055/api/Persons', true);
+            xhttpr.open('GET', 'http://localhost:3000/myGet', true);
 
             xhttpr.send();
 
             xhttpr.onload = () => {
                 if (xhttpr.status === 200) {
                     const response = xhttpr.response;
-                    window.alert(response);
-                    // Process the response data here 
+                    document.getElementById("story-input").value = response;
                 } else {
                     window.alert("erro");
                 }
