@@ -9,18 +9,27 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors({
     origin: '*'
-  }));
+}));
 
-  
+
 app.get("/myGet", (req, res) => {
-    const arr = ["teste", "teste2", "teste3"];
-    res.json(arr);
+    const myObject = {
+        names: {
+            firstName: 'Miguel',
+            lastName: 'Rico'
+        }
+    }
+
+    res.send(JSON.stringify(myObject));
 });
 
 app.post("/myPost", (req, res) => {
-    const jsonData = req.body;
-    console.log(jsonData);
-    res.sendStatus(201);
+    const { firstName, lastName } = req.body.employees;
+    console.log(req.body);
+    console.log("First Name: " + firstName);
+    console.log("Last Name: " + lastName);
+
+    res.send("Success");
 });
 
 app.listen(3000, () => console.log("API is running..."));

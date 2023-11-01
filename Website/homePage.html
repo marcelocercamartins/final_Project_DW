@@ -15,16 +15,45 @@
 <body>
     <header>
         <div class="jumbotron text-center">
-            <h1>DW Lab03</h1>
+            <h1>Call API</h1>
         </div>
     </header>
     <main>
-        <form>
-            <label>Get from api:<br />
-                <input type ="text" name="story" cols="60" rows="4" id="story-input"></input>
+        <form> 
+            <label>GET from api:</label>
+            <br>
+            <label>First Name:
+                <input type="text" cols="60" rows="4" id="GetText-firstName"
+                    style="width: 100px; text-align: left;"></input>
             </label>
             <br>
-            <input type="button" value="Submit" class="btn btn-primary" id="submit-button" onclick="handleMyForm()">
+            <label>Last Name:
+                <input type="text" cols="60" rows="4" id="GetText-lastName"
+                    style="width: 100px; text-align: left;"></input>
+            </label>
+            <br>
+            <input type="text" cols="60" rows="4" id="GetText" style="width: 1000px; text-align: left;"></input>
+            <br>
+            <input type="button" value="Submit" class="btn btn-primary" id="submit-button"
+                onclick="connectToApi('GET')">
+
+            <br><br>
+
+            <label>POST to api:</label>
+            <br>
+            <label>First Name:
+                <input type="text" cols="60" rows="4" id="postText-firstName"
+                    style="width: 100px; text-align: left;"></input>
+            </label>
+            <br>
+            <label>Last Name:
+                <input type="text" cols="60" rows="4" id="postText-lastName"
+                    style="width: 100px; text-align: left;"></input>
+            </label>
+            <br>
+            <input type="text" cols="60" rows="4" id="postText" style="width: 1000px; text-align: left;"></input>
+            <input type="button" value="Submit" class="btn btn-primary" id="submit-button"
+                onclick="connectToApi('POST')">
         </form>
     </main>
     <article>
@@ -33,8 +62,11 @@
     </footer>
 
     <script>
-        function handleMyForm() {
-
+        function connectToApi(methodType) {
+            if (methodType == "GET") { sendGet(); }
+            else if (methodType == "POST") { sendPost(); }
+        }
+        function sendGet() {
             const xhttpr = new XMLHttpRequest();
             xhttpr.open('GET', 'http://localhost:3000/myGet', true);
 
@@ -42,13 +74,40 @@
 
             xhttpr.onload = () => {
                 if (xhttpr.status === 200) {
-                    const response = xhttpr.response;
-                    document.getElementById("story-input").value = response;
+                    const {firstName, lastName} = JSON.parse(xhttpr.response).names;
+                    document.getElementById("GetText-firstName").value = firstName;
+                    document.getElementById("GetText-lastName").value = lastName;
+                    document.getElementById("GetText").value = xhttpr.response;
                 } else {
                     window.alert("erro");
                 }
             };
+        }
 
+        function sendPost() {
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            const rawConstruct = {
+                employees: {
+                    firstName: document.getElementById("postText-firstName").value,
+                    lastName: document.getElementById("postText-lastName").value
+                }
+            }
+
+            const raw = JSON.stringify(rawConstruct);
+
+            const requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+
+            fetch("http://localhost:3000/myPost", requestOptions)
+                .then(response => response.text())
+                .then(result => document.getElementById("postText").value = result)
+                .catch(error => document.getElementById("postText").value = error);
         }
     </script>
 </body>
