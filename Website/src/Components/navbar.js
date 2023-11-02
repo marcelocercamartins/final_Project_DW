@@ -6,14 +6,14 @@ import TocIcon from '@mui/icons-material/Toc';
 import { Button } from '@mui/material';
 
 
-function navbar() {
+function Navbar() {
 
-  //const [open_links, set_open_links] = useState(false);   https://youtu.be/QwarZBtFoFA?t=2199
+  const [open_links, set_open_links] = useState(false);   //https://youtu.be/QwarZBtFoFA?t=2268
 
   return (
     <div className='navbar'>
       
-      <div className='left_side'>
+      <div className='left_side' id={open_links ? "open" : "close"}>
         <img src={Logo}/> 
 
         <div className='hiddenLinks'>
@@ -40,4 +40,4 @@ function navbar() {
   )
 }
 
-export default navbar
+export default Navbar
