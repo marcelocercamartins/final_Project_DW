@@ -1,0 +1,12 @@
+Conteúdo:
+	->mostrar todos os tipos de eventos
+
+Utilizador não tem conta
+	->User pode ver todos os eventos, mas não pode gerir conteúdo
+
+Utilizador tem conta
+	->Pode gerir os eventos dele
+		-> quando o user cria um evento deverá ter uma lista de pessoas que aderiram
+	->Enventos privados com possibilidade de convite a outros utilizadores através
+		de copy link
+	
