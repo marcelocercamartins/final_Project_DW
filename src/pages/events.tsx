@@ -1,7 +1,7 @@
 const eventsPage = () => {
     return(
         <>
-
+        events
         </>
     )
 }

@@ -17,7 +17,6 @@ const MainLayout = ({children}: Props) => {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
-        Navbar
         {Array(15)
           .fill(0)
           .map((_, index) => (

@@ -1,4 +1,3 @@
-import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
 import "bootstrap/dist/css/bootstrap.min.css"
 import { MantineProvider, createTheme } from '@mantine/core';
@@ -23,7 +22,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   return getLayout(
     <MantineProvider theme={theme}>
       <MainLayout>
-        <Component {...pageProps} />
+        <Component {...pageProps}/>
       </MainLayout>
     </MantineProvider>
   )
