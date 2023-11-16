@@ -1,11 +1,8 @@
 
 import { useState } from 'react';
-import { json } from 'stream/consumers';
 import useSWR from 'swr'
-import homePage from "./homePage"
+
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
-
-
 
 export default function Home() {
   const { data, mutate } = useSWR("api/hello", fetcher);

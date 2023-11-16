@@ -5,7 +5,8 @@ import { ReactElement, ReactNode } from 'react';
 import { NextPage } from 'next';
 import MainLayout from '@/components/layout';
 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+
+type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode
 }
  
@@ -17,7 +18,7 @@ const theme = createTheme({
   /** Put your mantine theme override here */
 });
 
-export default function App({ Component, pageProps }: AppPropsWithLayout) {
+function App({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout = Component.getLayout ?? ((page) => page)
   return getLayout(
     <MantineProvider theme={theme}>
@@ -28,6 +29,4 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   )
 }
 
-
-
-
+export default App;
