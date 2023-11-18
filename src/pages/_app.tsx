@@ -1,5 +1,4 @@
 import type { AppProps } from 'next/app'
-import "bootstrap/dist/css/bootstrap.min.css"
 import { MantineProvider, createTheme } from '@mantine/core';
 import { ReactElement, ReactNode } from 'react';
 import { NextPage } from 'next';

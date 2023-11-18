@@ -7,9 +7,11 @@ function MainLayout ({children}: Props) {
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
   const lista = [{
-    id: "1", name: "evento"
+    id: "1", name: "Home", url:"/" /* fica apenas / para ele voltar ao index, que está a ser usado como home page */
   },  {
-    id:"2" , name:"page"
+    id:"2" , name:"Eventos", url:"events"
+  }, {
+    id:"3", name: "Meus Eventos", url:"myEvents"
   }]
 
   return (
@@ -30,8 +32,9 @@ function MainLayout ({children}: Props) {
       </AppShell.Header>
       <AppShell.Navbar p="md">
         {lista.map((item) => (
-          <Button id = {item.id}>{item.name}</Button>
+          <Button id = {item.id} variant="filled" size="compact-md" radius="xl" mt="md" component='a' href={item.url}>{item.name}</Button>
         ))}
+        <Button variant="filled" color="green" size="compact-md" radius="xl" fz="md" mt="md" component='a' href='login'>Login</Button>
       </AppShell.Navbar>
       <AppShell.Main>{children}</AppShell.Main>
     </AppShell>
