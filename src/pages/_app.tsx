@@ -3,7 +3,8 @@ import "bootstrap/dist/css/bootstrap.min.css"
 import { MantineProvider, createTheme } from '@mantine/core';
 import { ReactElement, ReactNode } from 'react';
 import { NextPage } from 'next';
-import MainLayout from '@/components/layout';
+import MainLayout from '../../components/layout';
+import '@mantine/core/styles.css';
 
 
 type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {

@@ -1,10 +1,16 @@
 import { useDisclosure } from '@mantine/hooks';
-import { AppShell, Burger, Group, Skeleton } from '@mantine/core';
+import { AppShell, Burger, Button, Group} from '@mantine/core';
 import { Props } from 'next/script';
 
 function MainLayout ({children}: Props) {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+
+  const lista = [{
+    id: "1", name: "evento"
+  },  {
+    id:"2" , name:"page"
+  }]
 
   return (
     <AppShell
@@ -23,11 +29,9 @@ function MainLayout ({children}: Props) {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
-        {Array(15)
-          .fill(0)
-          .map((_, index) => (
-            <Skeleton key={index} h={28} mt="sm" animate={false} />
-          ))}
+        {lista.map((item) => (
+          <Button id = {item.id}>{item.name}</Button>
+        ))}
       </AppShell.Navbar>
       <AppShell.Main>{children}</AppShell.Main>
     </AppShell>

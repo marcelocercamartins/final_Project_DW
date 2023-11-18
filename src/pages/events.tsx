@@ -1,7 +1,12 @@
+import { Button } from "@mantine/core";
+
 const eventsPage = () => {
+
     return(
         <>
-        events
+        
+        <Button size = "md">Full width button</Button>
+   
         </>
     )
 }
