@@ -1,4 +1,4 @@
-import { TextInput, PasswordInput, Flex } from '@mantine/core';
+import { TextInput, PasswordInput, Flex, Button } from '@mantine/core';
 
 const loginPage = () => {
     return (
@@ -24,6 +24,7 @@ const loginPage = () => {
                     placeholder="Password"
                     w={400}
                 />
+                <Button variant="filled" color="green" size="md" radius="xl" p={5} w={100}>Entrar</Button>
             </Flex>
 
         </>
