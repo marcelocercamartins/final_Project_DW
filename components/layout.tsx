@@ -37,6 +37,7 @@ function MainLayout({ children }: Props) {
         <Flex
           mih={255}
           gap="md"
+          h={900}
           justify="center"
           align="center"
           direction="column"
