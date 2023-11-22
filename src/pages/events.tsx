@@ -3,6 +3,14 @@ import { Table } from '@mantine/core';
 import useSWR from "swr";
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
+type eventsProps = {
+    eventId: Number,
+    eventName: String,
+    eventDate: Date,
+    eventLocation: String
+
+}
+
 const eventsPage = () => {
     const { data, mutate } = useSWR("api/getEvents", fetcher);
 
@@ -10,16 +18,12 @@ const eventsPage = () => {
         data
     )
 
-    const elements = [
-        { Name: 6, Location: 12.011, eventDate: 'C' },
-        { Name: 7, Location: 14.007, eventDate: 'N'}
-    ];
-    
-    const rows = elements.map((element) => (
-        <Table.Tr key={element.Name}>
-            <Table.Td>{element.Name}</Table.Td>
-            <Table.Td>{element.Location}</Table.Td>
-            <Table.Td>{element.eventDate}</Table.Td>
+
+    const rows = data?.map((element: eventsProps) => (
+        <Table.Tr key={element.eventId.toString()}>
+            <Table.Td>{element.eventName}</Table.Td>
+            <Table.Td>{element.eventLocation}</Table.Td>
+            <Table.Td>{element.eventDate?.toString()}</Table.Td>
         </Table.Tr>
     ));
 
