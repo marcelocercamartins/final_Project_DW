@@ -2,7 +2,7 @@ import { useDisclosure } from '@mantine/hooks';
 import NextImage from 'next/image';
 import { AppShell, Burger, Button, Flex, Group, Image } from '@mantine/core';
 import { Props } from 'next/script';
-import Logo from '/Fork/final_Project_DW/public/img/logo.jpg';
+import Logo from '/public/img/logo.jpg';
 
 function MainLayout({ children }: Props) {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
