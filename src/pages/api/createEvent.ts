@@ -4,10 +4,8 @@ import { NextResponse } from "next/server";
 
 export default async function handle(req: NextApiRequest, res:NextApiResponse) 
 {
+    const event = req.body
+    console.log(req.body.eventName);
     const prisma = new PrismaClient();
-    const response = await prisma.user.findMany();
-
-    return res.json(response);
-}
-
-
+    const response = await prisma.events.create(event);
+}   
