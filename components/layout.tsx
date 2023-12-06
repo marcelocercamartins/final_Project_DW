@@ -16,42 +16,85 @@ function MainLayout({ children }: Props) {
     id: "3", name: "Meus Eventos", url: "myEvents"
   }]
 
-  return (
-    <AppShell
-      header={{ height: 60 }}
-      navbar={{
-        width: 300,
-        breakpoint: 'sm',
-        collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
-      }}
-      padding="md"
-    >
-      <AppShell.Header>
-        <Group h="100%" px="md">
-          <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
-          <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
-          <Image component={NextImage} radius="md" h={55} w={55} fit="contain" src={Logo} alt="My image" /> Event Eagle
-        </Group>
-      </AppShell.Header>
-      <AppShell.Navbar p="md">
-        <Flex
-          mih={255}
-          gap="md"
-          h={900}
-          justify="center"
-          align="center"
-          direction="column"
-        >
-          {navbarButtons.map((item) => (
-            <Button id={item.id} variant="filled" radius="xl" mt="md" w={200} p={5} component='a' href={item.url}>{item.name}</Button>
-          ))}
-          <Button variant="filled" color="green" radius="xl" mt="md" w={200} p={5} component='a' href='login'>Login</Button>
-          <Button variant="transparent" color="indigo" radius="xl" mt="md" w={200} p={5} component='a' href='createAccount'>Criar Conta</Button>
-        </Flex>
-      </AppShell.Navbar>
-      <AppShell.Main>{children}</AppShell.Main>
-    </AppShell>
-  );
+  const UserLogged = verifyLogin()
+
+  if (UserLogged == 0){
+    return (
+      <AppShell
+        header={{ height: 60 }}
+        navbar={{
+          width: 300,
+          breakpoint: 'sm',
+          collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
+        }}
+        padding="md"
+      >
+        <AppShell.Header>
+          <Group h="100%" px="md">
+            <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
+            <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
+            <Image component={NextImage} radius="md" h={55} w={55} fit="contain" src={Logo} alt="My image" /> Event Eagle
+          </Group>
+        </AppShell.Header>
+        <AppShell.Navbar p="md">
+          <Flex
+            mih={255}
+            gap="md"
+            justify="flex-start"
+            align="center"
+            direction="column"
+          >
+            {navbarButtons.map((item) => (
+              <Button id={item.id} variant="filled" radius="xl" mt="md" w={200} p={5} component='a' href={item.url}>{item.name}</Button>
+            ))}
+            <Button variant="filled" color="green" radius="xl" mt="md" w={200} p={5} component='a' href='login'>Login</Button>
+            <Button variant="transparent" color="indigo" radius="xl" mt="md" w={200} p={5} component='a' href='createAccount'>Criar Conta</Button>
+          </Flex>
+        </AppShell.Navbar>
+        <AppShell.Main>{children}</AppShell.Main>
+      </AppShell>
+    );
+  } else {
+    return (
+      <AppShell
+        header={{ height: 60 }}
+        navbar={{
+          width: 300,
+          breakpoint: 'sm',
+          collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
+        }}
+        padding="md"
+      >
+        <AppShell.Header>
+          <Group h="100%" px="md">
+            <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
+            <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
+            <Image component={NextImage} radius="md" h={55} w={55} fit="contain" src={Logo} alt="My image" /> Event Eagle
+          </Group>
+        </AppShell.Header>
+        <AppShell.Navbar p="md">
+          <Flex
+            mih={255}
+            gap="md"
+            justify="flex-start"
+            align="center"
+            direction="column"
+          >
+            {navbarButtons.map((item) => (
+              <Button id={item.id} variant="filled" radius="xl" mt="md" w={200} p={5} component='a' href={item.url}>{item.name}</Button>
+            ))}
+            <Button variant="filled" color="green" radius="xl" mt="md" w={200} p={5} component='a' href='login'>Log Out</Button>
+          </Flex>
+        </AppShell.Navbar>
+        <AppShell.Main>{children}</AppShell.Main>
+      </AppShell>
+    );
+  }
+
 }
 
 export default MainLayout;
+
+function verifyLogin(){
+    return 1;
+}

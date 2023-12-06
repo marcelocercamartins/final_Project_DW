@@ -4,15 +4,12 @@ const loginPage = () => {
     return (
         <>
             <Flex
-                h={150}
-                w={500}
-                mt={300}
-                ml={500}
+                h={900}
                 gap="md"
                 justify="center"
                 align="center"
                 direction="column"
-                wrap="wrap"
+                flex-wrap="wrap"
             >
                 <TextInput id="UsernameInput"
                     placeholder="Username"
@@ -24,7 +21,7 @@ const loginPage = () => {
                     placeholder="Password"
                     w={400}
                 />
-                <Button variant="filled" color="green" size="md" radius="xl" p={5} w={100}>Entrar</Button>
+                <Button variant="filled" color="green" size="md" radius="xl" p={5} w={100} onClick={verifyUser}>Entrar</Button>
             </Flex>
 
         </>
@@ -32,3 +29,7 @@ const loginPage = () => {
 }
 
 export default loginPage;
+
+function verifyUser(){
+    
+}
