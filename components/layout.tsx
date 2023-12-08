@@ -49,8 +49,7 @@ function MainLayout({ children }: Props) {
 export default MainLayout;
 
 function defineNavbarButtons(){
-  let UserLogged = 0;
-  // codigo para fazer verificação de login
+  let UserLogged = verifyLoggin();
   
   if (UserLogged == 0){
     const navbarButtons = [{
@@ -78,4 +77,8 @@ function defineNavbarButtons(){
 
     return navbarButtons
   }
+}
+
+function verifyLoggin(){
+  return 1
 }
