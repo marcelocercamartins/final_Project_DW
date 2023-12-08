@@ -62,10 +62,14 @@ app.post("/register", (req, res) => {
 app.post("/login", (req, res) => {
     const name = req.body.username;
     const password = req.body.password;
+
+    console.log(name);
+    console.log(password);
  
     for (user of users) {
         if (user.username === name)
             if (user.password === password) {
+                console.log("ntre");
                 token = jwt.sign(user, secret);
                 return res.status(201).json({ auth: true, token: token, msg: getFavoritos(user.username) })
             } else {

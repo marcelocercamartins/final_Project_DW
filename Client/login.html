@@ -17,10 +17,10 @@
     <nav class="navbar navbar-inverse">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">EventEagle</a>
+          <a class="navbar-brand" href="index.html">EventEagle</a>
         </div>
         <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Home</a></li>
+          <li class="active"><a href="index.html">Home</a></li>
           <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Page 1
               <span class="caret"></span></a>
@@ -35,47 +35,29 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-          <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-log-in" onclick="login()"></span> Login</a></li>
         </ul>
       </div>
     </nav>
 
-    <h1>Old h1 code</h1>
-    <button onclick="getTocken()">Get Token</button>
-    <p id="currentToken"></p>
-    <h2>Exemplo de autenticação e autorização</h2>
-    <nav>
-      <button id="btnListar" onclick="listar()" style="display: none">
-        Listar dados
-      </button>
-      <button id="login" onclick="logar()">
-        Login
-      </button>
-      <button id="logout" onclick="logout()" style="display: none">
-        Logout
-      </button>
-      <button id="registar" onclick="registar()">
-        Registar
-      </button>
-    </nav>
-    <div id="divLogin" style="display:none;">
+    <!--Login box-->
+    <div class="wrapper fadeInDown">
+      <div id="formContent">
 
-      <fieldset>
-        <legend id="legenda"></legend>
-        <label for="username">Username:</label>
-        <input type="text" name="username" id="username" /><br />
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" />
-        <button id="btnLogin" onclick="login()">Enviar</button>
-        <button id="btnRegistar" onclick="registarEnviar()" style="display: none">Enviar Registo</button>
-      </fieldset>
-      <p id="pMsg"></p>
+        <div class="fadeIn first">
+          <p>Insert your data:</p>
+        </div>
+        <!-- Login Form -->
+        <input type="text" id="username" class="fadeIn second" name="login" placeholder="login">
+        <input type="text" id="password" class="fadeIn third" name="password" placeholder="password">
+        <button type="button" class="fadeIn fourth btn btn-primary" onclick="login()">Login</button>
+        <di class = "fadeIn fifht"><p></p></di>
+        <!-- Remind Passowrd -->
+        <div id="formFooter">
+          <a class="underlineHover" href="#">Forgot Password?</a>
+        </div>
+      </div>
     </div>
-    <hr />
-  </header>
-  <div id="divListar"></div>
-  <hr />
-
   <footer>our page</footer>
 </body>
 

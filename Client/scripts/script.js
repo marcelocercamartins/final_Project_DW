@@ -2,8 +2,8 @@ async function login() {
     const name = document.getElementById("username").value;
     const password = document.getElementById("password").value;
     const user = {
-        username: nome,
-        password: senha,
+        username: name,
+        password: password,
     };
     const resposta = await makeRequest("http://localhost:8002/login", {
         method: "POST",
@@ -15,16 +15,7 @@ async function login() {
         case 201:
             {
                 // login ok
-                document.getElementById("divLogin").style.display = "none";
-                document.getElementById("divListar").style.display = "block";
-                document.getElementById("divListar").innerHTML = json.msg;
-                document.getElementById("btnListar").style.display = "inline";
-                document.getElementById("pMsg").innerHTML = "";
-                document.getElementById("login").style.display = "none";
-                document.getElementById("logout").style.display = "inline";
-                document.getElementById("btnLogin").style.display = "inline";
-                document.getElementById("btnRegistar").style.display = "none";
-                document.getElementById("legenda").innerText = "Autenticar";
+                alert("login feito com sucesso");
                 localStorage.setItem("token", json.token);
                 break;
             }
