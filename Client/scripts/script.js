@@ -17,6 +17,9 @@ async function login() {
                 // login ok
                 alert("login feito com sucesso");
                 localStorage.setItem("token", json.token);
+                localStorage.setItem("login", true);
+
+                window.location.href = "index.html";
                 break;
             }
         case 401:

@@ -11,8 +11,11 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
 </head>
 <body>
+ 
+
   <header>
     <nav class="navbar navbar-inverse">
       <div class="container-fluid">
@@ -34,8 +37,8 @@
           <li><a href="#">Page 3</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-          <li><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+          <li id="signup"><a href="#"><span class="glyphicon glyphicon-user" ></span> Sign Up</a></li>
+          <li id="login"><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
         </ul>
       </div>
     </nav>
@@ -77,6 +80,22 @@
   <hr />
 
   <footer>our page</footer>
+
+  <script>
+    window.onload = function() {
+      renderPageAfterLoadHtmlElements();
+    };
+  
+    function renderPageAfterLoadHtmlElements()
+    {
+      const login = localStorage.getItem("login")
+      if(login == "true")
+      {
+        document.getElementById("login").style.display = 'none';
+        document.getElementById("signup").style.display='none';
+      }
+    }
+  </script>
 </body>
 
 </html>
