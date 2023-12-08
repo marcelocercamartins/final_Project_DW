@@ -1,0 +1,17 @@
+[
+    {
+        "username": "admin",
+        "password": "admin",
+        "tipo": 1
+    },
+    {
+        "username": "laercio",
+        "password": "xpto123",
+        "tipo": 0
+    },
+    {
+        "username": "joana",
+        "password": "12345",
+        "tipo": 0
+    }
+]
