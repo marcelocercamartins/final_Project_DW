@@ -65,36 +65,39 @@ function logar() {
     document.getElementById("btnRegistar").style.display = "none";
 }
 
-async function registarEnviar() {
-    const nome = document.getElementById("username").value;
-    const senha = document.getElementById("password").value;
-    const user = {
-        username: nome,
-        password: senha,
-    };
+async function singup() {
+    const email = document.getElementById("email").value;
+    const name = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    document.getElementById("returnMessage").innerHTML = "";
+
+    const user = {email: email, username: name, password: password,};
+
     const resposta = await makeRequest("http://localhost:8002/register", {
         method: "POST",
         body: JSON.stringify(user),
         headers: { "Content-type": "application/json; charset=UTF-8" },
     });
+
     json = await resposta.json();
     switch (resposta.status) {
         case 409:
             {
                 // Utilizador já existe
-                document.getElementById("pMsg").innerHTML = json.msg;
+                document.getElementById("returnMessage").innerHTML = json.msg;
                 break;
             }
         case 400:
             {
                 // Password inaceitável
-                document.getElementById("pMsg").innerHTML = json.msg;
+                document.getElementById("returnMessage").innerHTML = json.msg;
                 break;
             }
         case 201:
             {
                 // Utilizador registado
-                document.getElementById("pMsg").innerHTML = json.msg;
+                document.getElementById("returnMessage").innerHTML = json.msg;
+                window.location.href = "index.html";
                 break;
             }
     }
@@ -136,10 +139,6 @@ async function listar() {
     }
 }
 
-async function processResponseStatusCode(response)
-{
-
-}
 
 async function makeRequest(url, options) {
     try {

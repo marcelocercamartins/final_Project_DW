@@ -18,5 +18,20 @@
         "username": "miguel",
         "password": "miguel",
         "tipo": 0
+    },
+    {
+        "sername": "miguel2",
+        "password": "teste",
+        "tipo": 0
+    },
+    {
+        "sername": "miguel2",
+        "password": "teste",
+        "tipo": 0
+    },
+    {
+        "sername": "miguel3",
+        "password": "teste",
+        "tipo": 0
     }
 ]

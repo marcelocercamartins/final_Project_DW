@@ -5,11 +5,14 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const {MongoClient, ServerApiVersion} = require('mongodb');
+const nodemailer = require('nodemailer');
+
 
 const app = express();
 const PORT = process.env.PORT;
 const secret = process.env.SECRET;
 const uri = process.env.DBURI;
+const emailFrom = process.env.EMAILFROM;
 
 app.use(cors());
 app.options('*', cors())
@@ -36,6 +39,7 @@ app.get("/getToken", (req, res) => {
 
 // Create new User
 app.post("/register", (req, res) => {
+    const email = req.body.email;
     const username = req.body.username;
     const password = req.body.password;
 
@@ -46,10 +50,10 @@ app.post("/register", (req, res) => {
             return res.status(400).send({msg: 'Password deve ter 5 ou mais caracteres'});
         }
 
-        const newUser = {sername: username, password: req.body.password, tipo: 0}
+        const newUser = {sername: username, password: password, tipo: 0}
         users.push(newUser);
         write("./db/users.json", users);
-
+        sendEmail(email);
         return res.status(201).send({msg: `Criado utilizador ${username}`});
     } else 
     {
@@ -149,6 +153,34 @@ async function connectToDB() {
 async function disconnectToBD()
 {
     await dbConn.close();
+}
+
+
+// send email
+function sendEmail(email)
+{
+    const transporter = nodemailer.createTransport({
+        service: 'outlook',
+        auth: {
+          user: '30008432@students.ual.pt',
+          pass: ''
+        }
+      });
+      
+      const mailOptions = {
+        from: emailFrom,
+        to: email,
+        subject: 'Welcome to Event Finder',
+        text: 'That was easy!'
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      }); 
 }
 
 
