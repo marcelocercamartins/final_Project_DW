@@ -13,86 +13,64 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 </head>
-<body>
- 
 
+<body>
   <header>
     <nav class="navbar navbar-inverse">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">EventEagle</a>
+          <a class="navbar-brand" href="index.html">EventEagle</a>
         </div>
         <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Home</a></li>
+          <li class="active"><a href="index.html">Início</a></li>
+          <li><a href="">Eventos</a></li>
+          <li><a href="">Os meus eventos</a></li>
           <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">Page 1
-              <span class="caret"></span></a>
+              <span class="caret" ></span></a>
             <ul class="dropdown-menu">
-              <li><a href="#">Page 1-1</a></li>
-              <li><a href="#">Page 1-2</a></li>
-              <li><a href="#">Page 1-3</a></li>
+              <li><a href="">Page 1-1</a></li>
+              <li><a href="">Page 1-2</a></li>
+              <li><a href="">Page 1-3</a></li>
             </ul>
           </li>
-          <li><a href="#">Page 2</a></li>
-          <li><a href="#">Page 3</a></li>
         </ul>
+        <!--Buttons on the right-->
         <ul class="nav navbar-nav navbar-right">
-          <li id="signup"><a href="#"><span class="glyphicon glyphicon-user" ></span> Sign Up</a></li>
+          <li class="dropdown" id ="activeUser">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" > <span id = "activeUser_text">{User}</span>
+              <span class="caret" ></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="">Definições</a></li>
+              <li><a href="" onclick="logout()">Sair</a></li>
+            </ul>
+          </li>
           <li id="login"><a href="login.html"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+          <li id="signup"><a href="register.html"><span class="glyphicon glyphicon-user"></span> Registar</a></li>
         </ul>
       </div>
     </nav>
-
-    <h1>Old h1 code</h1>
-    <button onclick="getTocken()">Get Token</button>
-    <p id="currentToken"></p>
-    <h2>Exemplo de autenticação e autorização</h2>
-    <nav>
-      <button id="btnListar" onclick="listar()" style="display: none">
-        Listar dados
-      </button>
-      <button id="login" onclick="logar()">
-        Login
-      </button>
-      <button id="logout" onclick="logout()" style="display: none">
-        Logout
-      </button>
-      <button id="registar" onclick="registar()">
-        Registar
-      </button>
-    </nav>
-    <div id="divLogin" style="display:none;">
-
-      <fieldset>
-        <legend id="legenda"></legend>
-        <label for="username">Username:</label>
-        <input type="text" name="username" id="username" /><br />
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" />
-        <button id="btnLogin" onclick="login()">Enviar</button>
-        <button id="btnRegistar" onclick="registarEnviar()" style="display: none">Enviar Registo</button>
-      </fieldset>
-      <p id="pMsg"></p>
-    </div>
-    <hr />
   </header>
-  <div id="divListar"></div>
-  <hr />
 
-  <footer>our page</footer>
 
   <script>
-    window.onload = function() {
+    window.onload = function () {
       renderPageAfterLoadHtmlElements();
     };
-  
-    function renderPageAfterLoadHtmlElements()
-    {
+
+    function renderPageAfterLoadHtmlElements() {
       const login = localStorage.getItem("login")
-      if(login == "true")
-      {
+      if (login == "true") {
         document.getElementById("login").style.display = 'none';
-        document.getElementById("signup").style.display='none';
+        document.getElementById("signup").style.display = 'none';
+
+        const userName = localStorage.getItem("activeUser");
+        document.getElementById("activeUser").style.display = 'block';
+        document.getElementById("activeUser_text").innerHTML = "Olá, " + userName;
+      }else{
+        document.getElementById("activeUser").style.display = 'none';
+        document.getElementById("login").style.display = 'block';
+        document.getElementById("signup").style.display = 'block';
       }
     }
   </script>

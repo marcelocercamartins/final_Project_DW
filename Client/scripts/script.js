@@ -15,9 +15,10 @@ async function login() {
         case 201:
             {
                 // login ok
-                alert("login feito com sucesso");
                 localStorage.setItem("token", json.token);
                 localStorage.setItem("login", true);
+                localStorage.setItem("activeUser", name);
+                document.getElementById("returnMessage").innerHTML = "";
 
                 window.location.href = "index.html";
                 break;
@@ -25,14 +26,13 @@ async function login() {
         case 401:
             {
                 // Password errada
-                document.getElementById("pMsg").innerHTML = json.msg;
+                document.getElementById("returnMessage").innerHTML = json.msg;
                 break;
             }
         case 404:
             {
                 // Utilizador não encontrado
-                console.log(json.msg);
-                document.getElementById("pMsg").innerHTML = json.msg;
+                document.getElementById("returnMessage").innerHTML = json.msg;
                 break;
             }
     }
@@ -44,14 +44,11 @@ function getTocken()
 }
 
 function logout() {
-    document.getElementById("logout").style.display = "none";
-    document.getElementById("login").style.display = "inline";
-    document.getElementById("btnListar").style.display = "none";
-    document.getElementById("divListar").innerHTML = "";
-    document.getElementById("pMsg").innerHTML = "";
-    document.getElementById("username").value = "";
-    document.getElementById("password").value = "";
     localStorage.removeItem("token");
+    localStorage.removeItem("login");
+    localStorage.removeItem("activeUser");
+    window.location.href = "index.html";
+
 }
 
 function registar() {
