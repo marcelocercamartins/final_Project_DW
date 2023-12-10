@@ -53,6 +53,20 @@ app.post("/register", (req, res) => {
         const newUser = {sername: username, password: password, tipo: 0}
         users.push(newUser);
         write("./db/users.json", users);
+
+        //codigo de insert na base de dados
+        var insert_db = dbConn.db("Devweb");
+
+        insert_db.collection("Users").insertOne({nome:username,e_mail:email,pass:password}, function(err, res2){
+        dbConn.close();
+            if (err){
+                res.send(JSON.stringify(err));
+            } else {
+                res.send("inserted!");
+            }
+        });
+        // termina aqui
+        
         sendEmail(email);
         return res.status(201).send({msg: `Criado utilizador ${username}`});
     } else 
@@ -150,6 +164,8 @@ async function connectToDB() {
     }
 }
 
+
+
 async function disconnectToBD()
 {
     await dbConn.close();
@@ -185,7 +201,12 @@ function sendEmail(email)
 
 
 
+
+
+
+
 app.use(express.static('public'));
 app.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`);
+    connectToDB();
 });
