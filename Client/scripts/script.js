@@ -1,15 +1,14 @@
 async function login() {
     const name = document.getElementById("username").value;
     const password = document.getElementById("password").value;
-    const user = {
-        username: name,
-        password: password,
-    };
+    const userObj = { username: name, password: password};
+
     const resposta = await makeRequest("http://localhost:8002/login", {
         method: "POST",
-        body: JSON.stringify(user),
+        body: JSON.stringify(userObj),
         headers: { "Content-type": "application/json; charset=UTF-8" },
     });
+
     json = await resposta.json();
     switch (resposta.status) {
         case 201:
@@ -20,7 +19,7 @@ async function login() {
                 localStorage.setItem("activeUser", name);
                 document.getElementById("returnMessage").innerHTML = "";
 
-                window.location.href = "index.html";
+                window.location.href = "index.html"; //redireciona para a página principal
                 break;
             }
         case 401:
@@ -38,32 +37,6 @@ async function login() {
     }
 }
 
-function getTocken()
-{
-    alert(localStorage.getItem('token'));
-}
-
-function logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("login");
-    localStorage.removeItem("activeUser");
-    window.location.href = "index.html";
-
-}
-
-function registar() {
-    document.getElementById("divLogin").style.display = "block";
-    document.getElementById("legenda").innerText = "Registar";
-    document.getElementById("btnLogin").style.display = "none";
-    document.getElementById("btnRegistar").style.display = "inline";
-}
-
-function logar() {
-    document.getElementById('divLogin').style.display='block';
-    document.getElementById("legenda").innerText = "Login";
-    document.getElementById("btnLogin").style.display = "inline";
-    document.getElementById("btnRegistar").style.display = "none";
-}
 
 async function singup() {
     const email = document.getElementById("email").value;
@@ -71,15 +44,16 @@ async function singup() {
     const password = document.getElementById("password").value;
     document.getElementById("returnMessage").innerHTML = "";
 
-    const user = {email: email, username: name, password: password,};
+    const userObj = {username: name, password: password, email: email, };
 
-    const resposta = await makeRequest("http://localhost:8002/register", {
+    const resposta = await makeRequest("http://localhost:8002/singUp", {
         method: "POST",
-        body: JSON.stringify(user),
+        body: JSON.stringify(userObj),
         headers: { "Content-type": "application/json; charset=UTF-8" },
     });
 
     json = await resposta.json();
+
     switch (resposta.status) {
         case 409:
             {
@@ -89,7 +63,7 @@ async function singup() {
             }
         case 400:
             {
-                // Password inaceitável
+                // Password Incorreta
                 document.getElementById("returnMessage").innerHTML = json.msg;
                 break;
             }
@@ -100,8 +74,22 @@ async function singup() {
                 window.location.href = "index.html";
                 break;
             }
+        case 101:
+            {
+                document.getElementById("returnMessage").innerHTML = json.msg;
+                break;
+            }
     }
 }
+
+
+function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("login");
+    localStorage.removeItem("activeUser");
+    window.location.href = "index.html";
+}
+
 
 async function listar() {
     const resposta = await makeRequest("http://localhost:8002/listarDados", {

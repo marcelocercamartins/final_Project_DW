@@ -20,18 +20,28 @@
         "tipo": 0
     },
     {
-        "sername": "miguel2",
-        "password": "teste",
+        "username": "eusouumteste",
+        "password": "12345",
         "tipo": 0
     },
     {
-        "sername": "miguel2",
-        "password": "teste",
+        "username": "eusouumteste2",
+        "password": "12345",
         "tipo": 0
     },
     {
-        "sername": "miguel3",
-        "password": "teste",
+        "username": "eusouumteste3",
+        "password": "12345",
+        "tipo": 0
+    },
+    {
+        "username": "eusouumteste4",
+        "password": "12345",
+        "tipo": 0
+    },
+    {
+        "username": "teste233",
+        "password": "teste233",
         "tipo": 0
     }
 ]
