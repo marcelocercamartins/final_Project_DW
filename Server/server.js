@@ -129,6 +129,20 @@ async function findOneResult(table, findWhat)
     }
 }
 
+async function findAll(table)
+{
+    const dbConn = new MongoClient(uri);
+
+    try{
+        const findResult = await dbConn.db(database).collection(table).find(); 
+        await dbConn.close();        
+        return findResult;
+    }catch(err){
+        console.log(err);
+    }finally{
+        await dbConn.close();
+    }
+}
 
 //funções de apoio
 function verifyToken(token) {
