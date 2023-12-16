@@ -4,7 +4,7 @@ const cors = require("cors");
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
-const {MongoClient, ServerApiVersion} = require('mongodb');
+const {MongoClient} = require('mongodb');
 const nodemailer = require('nodemailer');
 
 
@@ -87,12 +87,12 @@ app.post("/login", (req, res) => {
 
 
 //funções Base de dados
-function insertLinesOnDatabase(table, valuetToInsert)
+async function insertLinesOnDatabase(table, valuetToInsert)
 {
-    connectToDB()
-    .then((dbConn) => {
-        const insert_db = dbConn.db(database);
+    const dbConn = new MongoClient(uri);
 
+    try{
+        const insert_db = dbConn.db(database);
         insert_db.collection(table).insertOne(valuetToInsert, function(err, res){
             if (err){
                 res.send(JSON.stringify(err));
@@ -100,41 +100,27 @@ function insertLinesOnDatabase(table, valuetToInsert)
                 res.send("inserted!");
             }
         });
-        disconnectToBD(dbConn);
-    })
-    .catch((err) => {
-        console.error("Error connecting to Database:", err);
-    });  
-}
-
-
-async function connectToDB() 
-{
-    try {
-      const dbConn = new MongoClient(uri, {
-          serverApi: {
-            version: ServerApiVersion.v1,
-            strict: true,
-            deprecationErrors: true,
-          }
-        });
-        return dbConn;
     }catch(err){
-          console.log(err);
-      }
-}
-
-  
-async function disconnectToBD(dbConn)
-{
-    try{
-        await dbConn.close();
-    }catch(err)
-    {
         console.log(err);
+    }finally{
+        await dbConn.close();
     }
 }
 
+async function findOneResult(table, findWhat)
+{
+    const dbConn = new MongoClient(uri);
+
+    try{
+        const findResult = await dbConn.db(database).collection(table).findOne(findWhat); 
+        return findResult;
+    }catch(err){
+        console.log(err);
+    }finally{
+        await dbConn.close();
+    }
+   
+}
 
 
 //funções de apoio
