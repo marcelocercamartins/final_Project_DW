@@ -35,8 +35,6 @@ async function login() {
                 break;
             }
     }
-
-    listar();
 }
 
 
