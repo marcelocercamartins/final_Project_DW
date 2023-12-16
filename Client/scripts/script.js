@@ -3,7 +3,7 @@ async function login() {
     const password = document.getElementById("password").value;
     const userObj = { username: name, password: password};
 
-    const resposta = await makeRequest("http://localhost:8002/login", {
+    const resposta = await makeRequest("http://localhost:8003/login", {
         method: "POST",
         body: JSON.stringify(userObj),
         headers: { "Content-type": "application/json; charset=UTF-8" },
@@ -35,10 +35,12 @@ async function login() {
                 break;
             }
     }
+
+    listar();
 }
 
 
-async function singup() {
+async function signUp() {
     const email = document.getElementById("email").value;
     const name = document.getElementById("username").value;
     const password = document.getElementById("password").value;
@@ -46,7 +48,7 @@ async function singup() {
 
     const userObj = {username: name, password: password, email: email, };
 
-    const resposta = await makeRequest("http://localhost:8002/singUp", {
+    const resposta = await makeRequest("http://localhost:8003/signUp", {
         method: "POST",
         body: JSON.stringify(userObj),
         headers: { "Content-type": "application/json; charset=UTF-8" },
@@ -92,7 +94,7 @@ function logout() {
 
 
 async function listar() {
-    const resposta = await makeRequest("http://localhost:8002/listarDados", {
+    const resposta = await makeRequest("http://localhost:8003/listarDados", {
         method: "GET",
         headers: {
             token: localStorage.getItem("token"),
