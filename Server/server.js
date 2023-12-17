@@ -75,6 +75,11 @@ app.post("/login", async (req, res) => {
     }
 });
 
+// registeredEvents   não existe necessidade de verificar token   os eventos registados qualquer um pode ver
+app.get("/registeredEvents", async (req, res) => {
+    const eventsList = await findAll("events");
+    return res.json({eventsList : eventsList});
+});
 
 
 // Acesso à informação somente se autorizado
@@ -129,13 +134,14 @@ async function findOneResult(table, findWhat)
     }
 }
 
+//Função para obter os objetos todos de uma tabela
 async function findAll(table)
 {
     const dbConn = new MongoClient(uri);
 
     try{
-        const findResult = await dbConn.db(database).collection(table).find(); 
-        await dbConn.close();        
+        const findResult = await dbConn.db(database).collection(table).find({}).toArray(); 
+        await dbConn.close();    
         return findResult;
     }catch(err){
         console.log(err);
@@ -143,6 +149,8 @@ async function findAll(table)
         await dbConn.close();
     }
 }
+
+findAll("events");
 
 //funções de apoio
 function verifyToken(token) {
@@ -152,9 +160,6 @@ function verifyToken(token) {
         return false;
     }
 }
-
-
-
 
 // send email
 function sendEmail(email)
