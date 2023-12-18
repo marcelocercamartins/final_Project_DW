@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Exemplo</title>
   <script src="scripts/script.js"></script>
+  <script src = "scripts/eventsList.js"></script>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -51,9 +52,7 @@
     </div>
   </nav>
 
-  <div class="eventListContainer">
-    <button onclick="displayEvents()"> here </button>
-  </div>
+  <div class="eventListContainer"></div>
   
   <!-- Footer-->
   <footer class="py-5 bg-black">
@@ -65,24 +64,8 @@
   <script>
     window.onload = function () {
       renderPageAfterLoadHtmlElements();
-      //displayEvents();
+      displayEvents();
     };
-
-    function renderPageAfterLoadHtmlElements() {
-      const login = localStorage.getItem("login")
-      if (login == "true") {
-        document.getElementById("login").style.display = 'none';
-        document.getElementById("signup").style.display = 'none';
-
-        const userName = localStorage.getItem("activeUser");
-        document.getElementById("activeUser").style.display = 'block';
-        document.getElementById("activeUser_text").innerHTML = "Olá, " + userName;
-      } else {
-        document.getElementById("activeUser").style.display = 'none';
-        document.getElementById("login").style.display = 'block';
-        document.getElementById("signup").style.display = 'block';
-      }
-    }
   </script>
 </body>
 

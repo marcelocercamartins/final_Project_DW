@@ -119,7 +119,7 @@ async function insertLinesOnDatabase(table, valuetToInsert)
     }
 }
 
-async function findOneResult(table, findWhat)
+async function findOneResult(table, findWhat) 
 {
     const dbConn = new MongoClient(uri);
 

@@ -62,22 +62,6 @@
     window.onload = function () {
       renderPageAfterLoadHtmlElements();
     };
-
-    function renderPageAfterLoadHtmlElements() {
-      const login = localStorage.getItem("login")
-      if (login == "true") {
-        document.getElementById("login").style.display = 'none';
-        document.getElementById("signup").style.display = 'none';
-
-        const userName = localStorage.getItem("activeUser");
-        document.getElementById("activeUser").style.display = 'block';
-        document.getElementById("activeUser_text").innerHTML = "Olá, " + userName;
-      } else {
-        document.getElementById("activeUser").style.display = 'none';
-        document.getElementById("login").style.display = 'block';
-        document.getElementById("signup").style.display = 'block';
-      }
-    }
   </script>
 </body>
 
