@@ -10,7 +10,8 @@ async function displayEvents(){
   
     const eventsList = await answer.json();
 
-    Object.entries(eventsList.eventsList).forEach(([key, value]) => {
+    //resultSet é o objeto que vem da base de dados com as informações do evento
+    Object.entries(eventsList.resultSet).forEach(([key, value]) => {
         const container = document.querySelector(".eventListContainer")
         const eventDate = value.date.split("   ");
         let eventDay = "" + eventDate[0];
@@ -67,6 +68,7 @@ async function displayEvents(){
         //Botão para levar á página de mais informações
         const moreInfo = document.createElement("button");
                 //configuração do botão
+        moreInfo.id = "Detalhes";
         moreInfo.textContent = "Detalhes";
         moreInfo.style.height = "45%";
         moreInfo.style.width = "10%";
@@ -74,8 +76,10 @@ async function displayEvents(){
         moreInfo.style.borderRadius = "10px";
         moreInfo.style.alignContent = "center";
         moreInfo.style.alignSelf = "center";
-        //moreInfo.style.onclick = eventDetails(value.name);
-        
+        moreInfo.addEventListener("click", function(){
+                eventDetails(value.name);
+        })
+   
                 //adição à div principal        
         mainDiv.appendChild(moreInfo);
 
@@ -85,5 +89,24 @@ async function displayEvents(){
 }
 
 async function eventDetails(eventName){
-    alert();
+        const eventObj = {event : eventName, }
+
+        const answer = await makeRequest("http://localhost:8003/eventDetails", {
+                method: "POST",
+                body: JSON.stringify(eventObj),
+                headers: {
+                    token: localStorage.getItem("token"),
+                    "Content-type": "application/json; charset=UTF-8",
+                },
+            });
+
+
+        const eventInfo = await answer.json();
+
+        //resultSet é o objeto que vem da base de dados com as informações do evento
+
+}
+
+async function addToMyEvents(){
+
 }

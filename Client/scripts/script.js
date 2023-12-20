@@ -146,9 +146,11 @@ function renderPageAfterLoadHtmlElements() {
       const userName = localStorage.getItem("activeUser");
       document.getElementById("activeUser").style.display = 'block';
       document.getElementById("activeUser_text").innerHTML = "Olá, " + userName;
+    
     } else {
       document.getElementById("activeUser").style.display = 'none';
       document.getElementById("login").style.display = 'block';
       document.getElementById("signup").style.display = 'block';
+      document.getElementById("myEventsNavBar").style.display = 'none';
     }
   }

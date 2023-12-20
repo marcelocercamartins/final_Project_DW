@@ -78,9 +78,16 @@ app.post("/login", async (req, res) => {
 // registeredEvents   não existe necessidade de verificar token   os eventos registados qualquer um pode ver
 app.get("/registeredEvents", async (req, res) => {
     const eventsList = await findAll("events");
-    return res.json({eventsList : eventsList});
+    return res.json({resultSet : eventsList});
 });
 
+//endpoint para utilizado para obter os detalhes de determinado evento
+app.post("/eventDetails", async (req, res) => {
+    const eventName = req.body.event;
+    
+    const eventInfo = await findOneResult("events", {name : eventName});
+    return res.json({resultSet : eventInfo});
+});
 
 // Acesso à informação somente se autorizado
 //app.get("/listarDados", (req, res) => {
@@ -149,8 +156,6 @@ async function findAll(table)
         await dbConn.close();
     }
 }
-
-findAll("events");
 
 //funções de apoio
 function verifyToken(token) {
