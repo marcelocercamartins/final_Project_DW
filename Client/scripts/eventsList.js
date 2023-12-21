@@ -12,7 +12,7 @@ async function displayEvents(){
 
     //resultSet é o objeto que vem da base de dados com as informações do evento
     Object.entries(eventsList.resultSet).forEach(([key, value]) => {
-        const container = document.querySelector(".eventListContainer")
+        const container = document.querySelector(".eventListContainer");
         const eventDate = value.date.split("   ");
         let eventDay = "" + eventDate[0];
         const eventHour = "" + eventDate[1];
@@ -89,6 +89,7 @@ async function displayEvents(){
 }
 
 async function eventDetails(eventName){
+        const container = document.querySelector(".overlay")
         const eventObj = {event : eventName, }
 
         const answer = await makeRequest("http://localhost:8003/eventDetails", {
@@ -101,12 +102,50 @@ async function eventDetails(eventName){
             });
 
 
+        //removePopup();
         const eventInfo = await answer.json();
 
         //resultSet é o objeto que vem da base de dados com as informações do evento
+        //div principal que involve as divs com os detalhes do evento     
+        const popup = document.createElement("div");
+        popup.className = "popup";
 
+
+        const closeButton = document.createElement("span");
+        closeButton.className = "closeButton";
+        closeButton.innerText = "X";
+        closeButton.addEventListener("click", hideEventDetails());
+        popup.appendChild(closeButton);
+
+        //div com o nome do evento
+        const eventTitle = document.createElement("div");
+        eventTitle.className = "eventTitle";
+        eventTitle.innerText = eventInfo.resultSet.name;
+        popup.appendChild(eventTitle);
+
+
+        //adição do popup à div overlay no html
+        container.appendChild(popup);
+
+        //mostrar as divs apos pressionar o botão e carregar a informação do evento
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('popup').style.display = 'block';
 }
 
-async function addToMyEvents(){
+async function hideEventDetails(){
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('popup').style.display = 'none';
+}
 
+async function removePopup(){
+        const existingOverlay = document.querySelector('.overlay');
+        const existingPopup = document.querySelector('.popup');
+      
+        if (existingOverlay) {
+          existingOverlay.parentNode.removeChild(existingOverlay);
+        }
+      
+        if (existingPopup) {
+          existingPopup.parentNode.removeChild(existingPopup);
+        }        
 }
