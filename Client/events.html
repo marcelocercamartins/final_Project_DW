@@ -53,7 +53,21 @@
   </nav>
 
   <div class = "eventListContainer"></div>
+  
   <div class="overlay" id="overlay" onclick="hideEventDetails()"></div>
+    <div class="popup" id="popup">
+      <span class="close-btn" onclick="hideEventDetails()">X</span>
+      <div class="event-details" id="eventImagePopupDiv">
+        <img id="eventImagePopup" src="" alt="" width="150px" height="150px">
+      </div> 
+      <div class="event-details" id="eventTitlePopupDiv"></div>
+      <div class="event-details" id="eventDatePopupDiv"></div>
+      <div class="event-details" id="eventHourPopupDiv"></div>
+
+      <div class="event-details" id="eventDescriptionPopupDiv"></div>
+      <div class="event-details" id="eventMapAPIDiv"></div>
+      <button onclick="addToMyEvents()">Adicionar aos Meus Eventos</button>
+  </div>
   
   <!-- Footer-->
   <footer class="py-5 bg-black">
