@@ -4,7 +4,7 @@ const cors = require("cors");
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
-const {MongoClient} = require('mongodb');
+const { MongoClient } = require('mongodb');
 const nodemailer = require('nodemailer');
 const { decode } = require('punycode');
 
@@ -29,24 +29,21 @@ app.post("/signUp", async (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
 
-    const findUserName = await findOneResult("users", {username: username}); 
+    const findUserName = await findOneResult("users", { username: username });
 
-    if (findUserName == null) 
-    {
-        if (password.length < 5) 
-        {
-            return res.status(400).send({msg: 'Password deve ter 5 ou mais caracteres'});
+    if (findUserName == null) {
+        if (password.length < 5) {
+            return res.status(400).send({ msg: 'Password deve ter 5 ou mais caracteres' });
         }
-        
-        const newUser = {username:username, email:email, password:password, events: []};
+
+        const newUser = { username: username, email: email, password: password, events: [] };
         insertLinesOnDatabase("users", newUser);
-        
+
         sendEmail(email);
-        return res.status(201).send({msg: `Criado utilizador ${username}`});
-    } else
-    {
+        return res.status(201).send({ msg: `Criado utilizador ${username}` });
+    } else {
         console.log("fodasse entrou no else");
-        return res.status(409).send({msg: 'Utilizador já existe'});
+        return res.status(409).send({ msg: 'Utilizador já existe' });
     }
 });
 
@@ -56,37 +53,51 @@ app.post("/login", async (req, res) => {
     const name = req.body.username;
     const password = req.body.password;
 
-    const findUser = await findOneResult("users", {username: name});
+    const findUser = await findOneResult("users", { username: name });
 
-    const user = {username: name, password: password};
+    const user = { username: name, password: password };
 
-    if(findUser != null)
-    {
-        if(findUser.password == password)
-        {
+    if (findUser != null) {
+        if (findUser.password == password) {
             token = jwt.sign(user, secret);
             return res.status(201).json({ auth: true, token: token, msg: "" });
         }
-        else{
+        else {
             return res.status(401).json({ msg: "Password inválida!" })
         }
-    }else{
+    } else {
         return res.status(404).json({ msg: "Utilizador não encontrado!" });
     }
 });
 
+app.post("/addEvent", async (req, res) => {
+    //verificar se existe um utilizador logado
+    const decoded = verifyToken(req.header('token'));
+    if (!decoded) {
+        return res.status(401).json({ msg: "Utilizador não autenticado ou não autorizado!" });
+    }
+    //Adição do evento ao utilizador
+    const user = decoded.username;
+    const eventName = req.body.event;
+
+    //Para atualizar apenas o array de eventos tenho de tirar o array atual adicionar o evento novo e dps atualizar o campo
+    // preciso do id do objeto tb acho
+})
+
+
 // registeredEvents   não existe necessidade de verificar token   os eventos registados qualquer um pode ver
 app.get("/registeredEvents", async (req, res) => {
     const eventsList = await findAll("events");
-    return res.json({resultSet : eventsList});
+    return res.json({ resultSet: eventsList });
 });
+
 
 //endpoint para utilizado para obter os detalhes de determinado evento
 app.post("/eventDetails", async (req, res) => {
     const eventName = req.body.event;
-    
-    const eventInfo = await findOneResult("events", {name : eventName});
-    return res.json({resultSet : eventInfo});
+
+    const eventInfo = await findOneResult("events", { name: eventName });
+    return res.json({ resultSet: eventInfo });
 });
 
 // Acesso à informação somente se autorizado
@@ -106,53 +117,50 @@ app.post("/eventDetails", async (req, res) => {
 
 
 //funções Base de dados
-async function insertLinesOnDatabase(table, valuetToInsert)
-{
+async function insertLinesOnDatabase(table, valuetToInsert) {
     const dbConn = new MongoClient(uri);
 
-    try{
+    try {
         const insert_db = await dbConn.db(database);
-        insert_db.collection(table).insertOne(valuetToInsert, function(err, res){
-            if (err){
+        insert_db.collection(table).insertOne(valuetToInsert, function (err, res) {
+            if (err) {
                 res.send(JSON.stringify(err));
             } else {
                 res.send("inserted!");
             }
         });
-    }catch(err){
+    } catch (err) {
         console.log(err);
-    }finally{
+    } finally {
         await dbConn.close();
     }
 }
 
-async function findOneResult(table, findWhat) 
-{
+async function findOneResult(table, findWhat) {
     const dbConn = new MongoClient(uri);
 
-    try{
-        const findResult = await dbConn.db(database).collection(table).findOne(findWhat); 
-        await dbConn.close();        
+    try {
+        const findResult = await dbConn.db(database).collection(table).findOne(findWhat);
+        await dbConn.close();
         return findResult;
-    }catch(err){
+    } catch (err) {
         console.log(err);
-    }finally{
+    } finally {
         await dbConn.close();
     }
 }
 
 //Função para obter os objetos todos de uma tabela
-async function findAll(table)
-{
+async function findAll(table) {
     const dbConn = new MongoClient(uri);
 
-    try{
-        const findResult = await dbConn.db(database).collection(table).find({}).toArray(); 
-        await dbConn.close();    
+    try {
+        const findResult = await dbConn.db(database).collection(table).find({}).toArray();
+        await dbConn.close();
         return findResult;
-    }catch(err){
+    } catch (err) {
         console.log(err);
-    }finally{
+    } finally {
         await dbConn.close();
     }
 }
@@ -167,35 +175,34 @@ function verifyToken(token) {
 }
 
 // send email
-function sendEmail(email)
-{
-    try{
+function sendEmail(email) {
+    try {
         const transporter = nodemailer.createTransport({
             service: 'outlook',
             auth: {
-              user: emailFrom,
-              pass: passwordEmail
+                user: emailFrom,
+                pass: passwordEmail
             }
-          });
-          
-          const mailOptions = {
+        });
+
+        const mailOptions = {
             from: emailFrom,
             to: email,
             subject: 'Welcome to Event Finder',
             text: 'That was easy!'
-          };
-          
-          transporter.sendMail(mailOptions, function(error, info){
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
-              console.log(error);
+                console.log(error);
             } else {
-              console.log('Email sent: ' + info.response);
+                console.log('Email sent: ' + info.response);
             }
-          }); 
-    }catch(err){
+        });
+    } catch (err) {
         console.log(`Email error: ${err}`);
     }
-    
+
 }
 
 app.use(express.static('public'));

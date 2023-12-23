@@ -1,4 +1,4 @@
-async function login() {
+    async function login() {
     const name = document.getElementById("username").value;
     const password = document.getElementById("password").value;
     const userObj = { username: name, password: password};
