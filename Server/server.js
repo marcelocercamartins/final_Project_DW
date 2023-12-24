@@ -77,11 +77,17 @@ app.post("/addEvent", async (req, res) => {
         return res.status(401).json({ msg: "Utilizador não autenticado ou não autorizado!" });
     }
     //Adição do evento ao utilizador
-    const user = decoded.username;
+    const userName = decoded.username;
     const eventName = req.body.event;
 
     //Para atualizar apenas o array de eventos tenho de tirar o array atual adicionar o evento novo e dps atualizar o campo
     // preciso do id do objeto tb acho
+    const userInfo = await findOneResult("users", { username: userName });
+    const userID = userInfo._id;
+    const userEventsList = userInfo.events;
+
+    const updatedList = userEventsList.concat(eventName);
+    
 })
 
 
