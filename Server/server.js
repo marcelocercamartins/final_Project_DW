@@ -86,8 +86,15 @@ app.post("/addEvent", async (req, res) => {
     const userID = userInfo._id;
     const userEventsList = userInfo.events;
 
-    const updatedList = userEventsList.concat(eventName);
-    
+    const verifyIfAlreadyAdded = verifyIfEventAlreadyOnList(userInfo, eventName);
+
+    if (verifyIfAlreadyAdded == 0) {
+        const updatedList = userEventsList.concat(eventName);
+        updateObjectField("users", userID, updatedList);
+    } else {
+        return res.status(360).json({ msg: "Este evento já se encontra na sua lista de eventos!" });
+    }
+
 })
 
 
@@ -121,6 +128,17 @@ app.post("/eventDetails", async (req, res) => {
 //    }
 //});
 
+async function verifyIfEventAlreadyOnList(userInfo, event) {
+    const userEvents = userInfo.events;
+
+    for (var i = 0; i < userEvents.length; i++) {
+        if (userEvents[0] == event) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
 
 //funções Base de dados
 async function insertLinesOnDatabase(table, valuetToInsert) {
@@ -137,6 +155,18 @@ async function insertLinesOnDatabase(table, valuetToInsert) {
         });
     } catch (err) {
         console.log(err);
+    } finally {
+        await dbConn.close();
+    }
+}
+
+async function updateObjectField(table, id, value) {
+    const dbConn = new MongoClient(uri);
+    try {
+        const insert_db = await dbConn.db(database);
+        insert_db.collection(table).updateOne({ _id: id }, { $set: { "events": value } })
+    } catch (err) {
+        console.log(err)
     } finally {
         await dbConn.close();
     }

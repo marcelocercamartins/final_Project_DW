@@ -138,7 +138,17 @@ async function addToMyEvents() {
                 },
         });
 
-        if (answer.status == 401) {
-                alert("Faz Login Animal");
+        switch (answer.status) {
+                case 401:
+                        {
+                                alert("Faz Login Animal");
+                                break;
+                        }
+
+                case 360:
+                        {
+                                alert("Já está na lista Animal");
+                                break;
+                        }
         }
 }
