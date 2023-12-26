@@ -32,6 +32,11 @@
   margin-bottom: 10px;
 }
 
+.event-map {
+  margin-bottom: 10px;
+  height: 300px;
+}
+
 .close-btn {
   cursor: pointer;
   color: #333;

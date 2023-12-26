@@ -101,9 +101,12 @@ async function eventDetails(eventName) {
         });
 
         const eventInfo = await answer.json();
-        const eventDate = eventInfo.resultSet.date.split("   ")
+        const eventDate = eventInfo.resultSet.date.split("   ");
         const eventDay = "" + eventDate[0];
         const eventHour = "" + eventDate[1];
+        const eventCoordinates = eventInfo.resultSet.gps.split(", ");
+        const eventLatitude = eventCoordinates[0];
+        const eventLongitude = eventCoordinates[1];
 
         //alteração do conteudo do popup conforme o evento. resultSet é o objeto que vem da base de dados com as informações do evento
         document.getElementById('eventTitlePopupDiv').innerText = eventInfo.resultSet.name;
@@ -111,18 +114,37 @@ async function eventDetails(eventName) {
         document.getElementById('eventHourPopupDiv').innerText = eventHour;
         document.getElementById('eventDescriptionPopupDiv').innerText = eventInfo.resultSet.description;
         document.getElementById("eventImagePopup").src = eventInfo.resultSet.imageURL;
-
+        callMapsAPI(eventLatitude, eventLongitude)
         document.getElementById('overlay').style.display = 'block';
         document.getElementById('popup').style.display = 'block';
 }
 
 async function hideEventDetails() {
+       //reset ao mapa
+        var container = L.DomUtil.get('eventMapAPIDiv');
+        if(container != null){
+                container._leaflet_id = null;
+        }        
+        
         document.getElementById('overlay').style.display = 'none';
         document.getElementById('popup').style.display = 'none';
 }
 
-async function callMapsAPI() {
-
+async function callMapsAPI(eventLatitude, eventLongitude) {
+        var mymap = L.map('eventMapAPIDiv').setView([eventLatitude, eventLongitude], 15);
+        
+        //força o carregamento dos tiles
+        setTimeout(function () {
+                window.dispatchEvent(new Event("resize"));
+             }, 1);
+        
+        // Adicione um Tile Layer do OpenStreetMap (necessário - direitos de autor)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(mymap);     
+                                     
+        // Adicione um marcador
+        L.marker([eventLatitude, eventLongitude]).addTo(mymap) 
 }
 
 async function addToMyEvents() {
