@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Exemplo</title>
   <script src="scripts/script.js"></script>
+  <script src = "scripts/eventsList.js"></script>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -54,11 +55,13 @@
   </nav>
 
   <!--Content-->
+
 <div class="container">
+  <div id="another-container">
     <div class="row">
         <div class="col-md-9 mb40">
                 <div class="post-content">
-                    <h4 class="mb40 text-uppercase font500 description">About Me</h4>
+                    <h4 class="userDescription">About Me</h4>
                     <div class="media mb40">
                         <i class="d-flex mr-3 fa fa-user-circle fa-5x text-primary"></i>
                         <div class="media-body">
@@ -66,14 +69,14 @@
                           <hr>
                           </div>
                     </div>
-                </div>
-            
+                </div> 
         </div>
+        
         <div class="col-md-3 mb40">
             <div class="mb40">
                 <h4 class="sidebar-title">Menu</h4>
                 <ul class="list-unstyled categories">
-                    <li><a href="#">Criar evento</a></li>
+                    <li id="criarEvento"><a href="#" id="criarEventoLink" onclick="createPosts()">Criar evento</a></li>
                     <li><a href="#">Ver os meus eventos</a>
                         <ul class="list-unstyled">
                             <li><a href="#"></a></li>
@@ -84,105 +87,99 @@
             </div>
         </div>
     </div>
-</div>
+  </iv>
+
+
 
 <!-- Posts section -->
 
-<div class="row mb-3">
-  <div class="col-12 text-center">
-    <h2 class="heading">Últimos eventos postados</h2>
+  <div class="row mb-3">
+    <div class="col-12 text-center">
+      <p class="heading">Últimos eventos postados</p>
+    </div>
+  </div>
+
+  <section class="row align-items-stretch photos" id="section-photos">
+    <div class="col-12">
+      <div class="row align-items-stretch text-center">
+
+        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <a href="./assets/img/03.jpg" class="d-block photo-item" data-fancybox="gallery">
+            <img src="./assets/img/03.jpg" alt="Image" class="img-fluid mb-0">
+          </a>
+          <h6 class="heading">Nome do Evento</h6>
+        </div>
+        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <a href="./assets/img/02.jpg" class="d-block photo-item" data-fancybox="gallery">
+            <img src="./assets/img/02.jpg" alt="Image" class="img-fluid mb-0">
+          </a>
+          <h6 class="heading">Nome do Evento</h6>
+        </div>
+        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+          <a href="./assets/img/01.jpg" class="d-block photo-item" data-fancybox="gallery">
+            <img src="./assets/img/01.jpg" alt="Image" class="img-fluid mb-0">
+          </a>
+          <h6 class="heading">Nome do Evento</h6>
+        </div>
+
+        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up">
+          <a href="./assets/img/02.jpg" class="d-block photo-item" data-fancybox="gallery">
+            <img src="./assets/img/02.jpg" alt="Image" class="img-fluid mb-0">
+          </a>
+          <h6 class="heading">Nome do Evento</h6>
+        </div>
+        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <a href="" class="d-block photo-item" data-fancybox="gallery">
+            <img src="" alt="Image" class="img-fluid mb-0">
+          </a>
+          <h6 class="heading">Nome do Evento</h6>
+        </div>
+        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+          <a href="" class="d-block photo-item" data-fancybox="gallery">
+            <img src="" alt="Image" class="img-fluid mb-0">
+          </a>
+          <h6 class="heading">Nome do Evento</h6>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+</div>
+
+  <div id="eventoSquare">
+    <form action="">
+      <label for="imageInput">Image:</label>
+      <input type="file" id="imageInput" name="imageInput">
+      
+
+      <label for="titleInput">Title:</label>
+      <input type="text" id="titleInput" name="titleInput" placeholder="Title">
+    
+
+      <label for="dateInput">Date:</label>
+      <input type="date" id="dateInput" name="dateInput" placeholder="ddmmaaaa">
+
+      <label for="durationInput">Duration:</label>
+      <input type="text" id="durationInput" name="durationInput" placeholder="00h00">
+      <br>
+
+      <label for="descriptionInput">Description:</label>
+      <textarea id="descriptionInput" name="descriptionInput" placeholder="Event Description"></textarea>
+      <br>
+      
+      <input type="submit" value="Submit">
+    </form>
   </div>
 </div>
 
-<section class="row align-items-stretch photos" id="section-photos">
-  <div class="col-12">
-    <div class="row align-items-stretch">
-
-      <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up">
-        <a href="./assets/img/03.jpg" class="d-block photo-item" data-fancybox="gallery">
-          <img src="./assets/img/03.jpg" alt="Image" class="img-fluid mb-0">
-          <div class="photo-text-more">
-            <span class="icon icon-eye"></span>
-          </div>
-        </a>
-      </div>
-      <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-        <a href="./assets/img/02.jpg" class="d-block photo-item" data-fancybox="gallery">
-          <img src="./assets/img/02.jpg" alt="Image" class="img-fluid mb-0">
-          <div class="photo-text-more">
-            <span class="icon icon-eye"></span>
-          </div>
-        </a>
-      </div>
-      <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-        <a href="./assets/img/01.jpg" class="d-block photo-item" data-fancybox="gallery">
-          <img src="./assets/img/01.jpg" alt="Image" class="img-fluid mb-0">
-          <div class="photo-text-more">
-            <span class="icon icon-eye"></span>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up">
-        <a href="" class="d-block photo-item" data-fancybox="gallery">
-          <img src="" alt="Image" class="img-fluid mb-0">
-          <div class="photo-text-more">
-            <span class="icon icon-eye"></span>
-          </div>
-        </a>
-      </div>
-      <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-        <a href="" class="d-block photo-item" data-fancybox="gallery">
-          <img src="" alt="Image" class="img-fluid mb-0">
-          <div class="photo-text-more">
-            <span class="icon icon-eye"></span>
-          </div>
-        </a>
-      </div>
-      <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-        <a href="" class="d-block photo-item" data-fancybox="gallery">
-          <img src="" alt="Image" class="img-fluid mb-0">
-          <div class="photo-text-more">
-            <span class="icon icon-eye"></span>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up">
-        <a href="" class="d-block photo-item" data-fancybox="gallery">
-          <img src="" alt="Image" class="img-fluid mb-0">
-          <div class="photo-text-more">
-            <span class="icon icon-eye"></span>
-          </div>
-        </a>
-      </div>
-      <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-        <a href="" class="d-block photo-item" data-fancybox="gallery">
-          <img src="" alt="Image" class="img-fluid mb-0">
-          <div class="photo-text-more">
-            <span class="icon icon-eye"></span>
-          </div>
-        </a>
-      </div>
-      <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-        <a href="" class="d-block photo-item" data-fancybox="gallery">
-          <img src="" alt="Image" class="img-fluid mb-0">
-          <div class="photo-text-more">
-            <span class="icon icon-eye"></span>
-          </div>
-        </a>
-      </div>
-    </div>
-
-  </div>
-</section>
-
   <!-- Footer-->
-  <footer class="py-5 bg-black">
-    <div class="container px-5">
-      <p class="m-0 text-center text-white small">Copyright &copy; Your Website 2023</p>
-    </div>
-  </footer>
+<footer class="py-5 bg-black">
+  <div class="container px-5">
+    <p class="m-0 text-center text-white small">Copyright &copy; Your Website 2023</p>
+  </div>
+</footer>
 
   <script>
     window.onload = function () {
