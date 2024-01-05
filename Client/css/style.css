@@ -5304,7 +5304,7 @@ textarea.form-control-lg {
   --bs-modal-header-border-color: var(--bs-border-color);
   --bs-modal-header-border-width: 1px;
   --bs-modal-title-line-height: 1.5;
-  --bs-modal-footer-gap: 0.5rem;
+  --bs-modal-footer-gap: 0.rem;
   --bs-modal-footer-bg: ;
   --bs-modal-footer-border-color: var(--bs-border-color);
   --bs-modal-footer-border-width: 1px;
@@ -10962,7 +10962,8 @@ header.masthead .bg-circle-4 {
 
 /*MyEvents*/
 
-.description {
+
+.userDescription, .sidebar-title {
   margin-top: 25px;
 }
 .media-body h5 {
@@ -10997,71 +10998,85 @@ header.masthead .bg-circle-4 {
 /* lastposts */
 
 .heading {
-  font-size: px;
+  font-size: 20px;
+  color: black;
+  margin-bottom: 0;
 }
 
-.photos {
-  .photo-item {
-    position: relative;
-    display: block;
-    margin-bottom: 5px;
-    overflow: hidden;
-    &:after {
-      position: absolute;
-      content: "";
-      left: 0;
-      right: 0;
-      bottom: 0;
-      top: 0;
-      background: rgba(global_bg_color,.9);
-      z-index: 1;
-      transition: .3s all ease;
-      opacity: 0;
-      visibility: hidden;
-    }
-    .photo-text-more {
-      position: absolute;
-      z-index: 3;
-      top: 50%;
-      left: 50%;
-      width: 100%;
-      transform: translate(-50%, -50%);
-      margin-top: 30px;
-      transition: .3s all ease;
-      opacity: 0;
-      visibility: hidden;
-      text-align: center;
-      .icon {
-        color: primary;
-        font-size: 20px;
-      }
-      .heading {
-        font-size: 16px;
-        color: white;
-        margin-bottom: 0;
-        text-transform: uppercase;
-      }
-      .meta {
-        color: darken(black, 20%);
-        text-transform: uppercase;
-        font-size: 12px;
-      }
-    }
-    img {
-      width: 100%;
-      object-fit: cover;
-      height: 300px;
-      margin-bottom: 0;
-      margin-bottom: grid-gutter-width;
-      transition: .3s all ease;
-      transform: scale(1.0);
+.photos .photo-item {
+  position: relative;
+  display: block;
+  margin-bottom: 5px;
+  overflow: hidden;
+}
+   
+.img-fluid {
+  width: 100%;
+  object-fit: cover;
+  height: 300px;
+  transition: .3s all ease;
+  transform: scale(1.0); /* =0 to make disapear */   
+}
+  
 
-      
-    }
+  .photos {
+    .heading {
+      font-size: 15px;
+      color: black;
+      margin-bottom: 20px;
+      }
   }
-}
+
+  input[type=text], input[type=file], #descriptionInput{
+    width: 100%;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing:content-box;
+  }
+
+  input[type=date], #durationInput {
+    width: 15%;
+    margin: 8px 50px 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: content-box;
+    
+  }
+
+  
+  input[type=submit] {
+    width: 10%;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  input[type=submit]:hover {
+    background-color: #45a049;
+  }
+  
+  #eventoSquare {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    width: 70%;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    display: none;
+    
+  }
+
+  .another-container {
+    display:flex;
+  }
 
 
+  
 
 @media (min-width: 992px) {
   header.masthead {
