@@ -174,3 +174,15 @@ async function addToMyEvents() {
                         }
         }
 }
+
+function createPosts(){
+        document.getElementById('criarEventoLink').addEventListener('click', function() {
+                let eventoSquare = document.getElementById('eventoSquare');
+                let anotherContainer = document.getElementById('another-container');
+                
+                
+                eventoSquare.style.display = 'block';
+                anotherContainer.style.display = 'none';
+        // Change 'none' to 'block' to make the square appear
+
+        });}
