@@ -3,10 +3,10 @@ async function displayEvents(typeOfSearch) {
         switch(typeOfSearch){
                 case 1:
                         const answer = await makeRequest("http://localhost:8003/registeredEvents", {
-                        method: "GET",
-                        headers: {
-                                token: localStorage.getItem("token"),
-                                "Content-type": "application/json; charset=UTF-8",
+                                method: "GET",
+                                headers: {
+                                        token: localStorage.getItem("token"),
+                                        "Content-type": "application/json; charset=UTF-8",
                                 },
                         });
                         const eventsList = await answer.json();
@@ -16,11 +16,11 @@ async function displayEvents(typeOfSearch) {
                 case 2:
                         const searchEvent = document.getElementById("searchBox").value;
                         const answerSearch = await makeRequest("http://localhost:8003/searchForEvents", {
-                        method: "POST",
-                        body: JSON.stringify(searchBox),
-                        headers: {
-                                token: localStorage.getItem("token"),
-                                "Content-type": "application/json; charset=UTF-8",
+                                method: "POST",
+                                body: JSON.stringify({searchEvent}),
+                                headers: {
+                                        token: localStorage.getItem("token"),
+                                        "Content-type": "application/json; charset=UTF-8",
                                 },
                         });
                         const eventsListSearch = await answerSearch.json();
@@ -29,10 +29,10 @@ async function displayEvents(typeOfSearch) {
         
                 case 3:
                         const answerMyEvents = await makeRequest("http://localhost:8003/myEvents", {
-                        method: "POST",
-                        headers: {
-                                token: localStorage.getItem("token"),
-                                "Content-type": "application/json; charset=UTF-8",
+                                method: "POST",
+                                headers: {
+                                        token: localStorage.getItem("token"),
+                                        "Content-type": "application/json; charset=UTF-8",
                                 },
                         });
                         const myEventsList = await answerMyEvents.json();
@@ -43,6 +43,8 @@ async function displayEvents(typeOfSearch) {
 
 
 function createEventsList(eventsList){
+        const refreshPage = document.getElementById("eventListContainer");
+        refreshPage.innerHTML = "";
         //resultSet é o objeto que vem da base de dados com as informações do evento
         Object.entries(eventsList.resultSet).forEach(([key, value]) => {
                 const container = document.querySelector(".eventListContainer");

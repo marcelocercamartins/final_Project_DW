@@ -222,7 +222,7 @@ async function findEvent(event){
     const dbConn = new MongoClient(uri);
 
     try {
-        const findResult = await dbConn.db(database).find({name: event}).toArray();
+        const findResult = await dbConn.db(database).collection("events").find({name: new RegExp('^' + event.searchEvent) }).toArray();
         await dbConn.close();
         return findResult;
     } catch (err) {
