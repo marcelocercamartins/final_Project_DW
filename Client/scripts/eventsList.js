@@ -1,15 +1,48 @@
 // função que trata de apresentar os eventos registados   não há necessidade de fazer verificação de tokes    qualquer um pode ver
-async function displayEvents() {
-        const answer = await makeRequest("http://localhost:8003/registeredEvents", {
-                method: "GET",
-                headers: {
-                        token: localStorage.getItem("token"),
-                        "Content-type": "application/json; charset=UTF-8",
-                },
-        });
+async function displayEvents(typeOfSearch) {
+        switch(typeOfSearch){
+                case 1:
+                        const answer = await makeRequest("http://localhost:8003/registeredEvents", {
+                        method: "GET",
+                        headers: {
+                                token: localStorage.getItem("token"),
+                                "Content-type": "application/json; charset=UTF-8",
+                                },
+                        });
+                        const eventsList = await answer.json();
+                        createEventsList(eventsList);
+                        break;
+                
+                case 2:
+                        const searchEvent = document.getElementById("searchBox").value;
+                        const answerSearch = await makeRequest("http://localhost:8003/searchForEvents", {
+                        method: "POST",
+                        body: JSON.stringify(searchBox),
+                        headers: {
+                                token: localStorage.getItem("token"),
+                                "Content-type": "application/json; charset=UTF-8",
+                                },
+                        });
+                        const eventsListSearch = await answerSearch.json();
+                        createEventsList(eventsListSearch);
+                        break;
+        
+                case 3:
+                        const answerMyEvents = await makeRequest("http://localhost:8003/myEvents", {
+                        method: "POST",
+                        headers: {
+                                token: localStorage.getItem("token"),
+                                "Content-type": "application/json; charset=UTF-8",
+                                },
+                        });
+                        const myEventsList = await answerMyEvents.json();
+                        createEventsList(myEventsList);
+                        break; 
+        }       
+}
 
-        const eventsList = await answer.json();
 
+function createEventsList(eventsList){
         //resultSet é o objeto que vem da base de dados com as informações do evento
         Object.entries(eventsList.resultSet).forEach(([key, value]) => {
                 const container = document.querySelector(".eventListContainer");
@@ -133,7 +166,7 @@ async function hideEventDetails() {
 async function callMapsAPI(eventLatitude, eventLongitude) {
         var mymap = L.map('eventMapAPIDiv').setView([eventLatitude, eventLongitude], 15);
         
-        //força o carregamento dos tiles
+        //força o carregamento das tiles
         setTimeout(function () {
                 window.dispatchEvent(new Event("resize"));
              }, 1);
@@ -186,3 +219,8 @@ function createPosts(){
         // Change 'none' to 'block' to make the square appear
 
         });}
+
+
+async function eventSearcher(){
+        displayEvents(2)
+}

@@ -56,8 +56,15 @@
     </div>
   </nav>
 
+  <!-- div para pesquisa de eventos -->
+  <div>
+    <input id="searchBox" type="text" name="searchBox" placeholder="Pesquisa" oninput="eventSearcher(this)">
+  </div>
+
+  <!-- div com os eventos -->
   <div class = "eventListContainer"></div>
   
+  <!-- popup com os detalhes do evento -->
   <div class="overlay" id="overlay" onclick="hideEventDetails()"></div>
     <div class="popup" id="popup">
       <span class="close-btn" onclick="hideEventDetails()">X</span>
@@ -82,7 +89,7 @@
   <script>
     window.onload = function () {
       renderPageAfterLoadHtmlElements();
-      displayEvents();
+      displayEvents(1);
     };
   </script>
 </body>

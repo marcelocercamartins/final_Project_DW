@@ -51,6 +51,16 @@
     display: none;
 }
 
+#searchBox{
+  display: flex;
+  margin-top: 20px;
+  width: 15%;
+  padding: 10px;
+  border: 1px solid pink;
+  border-radius: 10px;
+  margin-left: 10%;
+}
+
 @charset "UTF-8";
 /*!
 * Start Bootstrap - One Page Wonder v6.0.6 (https://startbootstrap.com/theme/one-page-wonder)

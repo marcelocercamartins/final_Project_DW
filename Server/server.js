@@ -104,6 +104,23 @@ app.get("/registeredEvents", async (req, res) => {
     return res.json({ resultSet: eventsList });
 });
 
+// endpoint utilizado para fazer uma pesquisa de eventos especifica
+app.post("/searchForEvents", async (req, res) => {
+    const event = req.body;
+    const eventsList = await findEvent(event);
+    return res.json({ resultSet: eventsList });
+});
+
+//endpoint utilizado para receber os eventos de um utilizador
+app.post("/myEvents", async (req, res) => {
+    const decoded = verifyToken(req.header('token'));
+    if (!decoded) {
+        return res.status(401).json({ msg: "Utilizador não autenticado ou não autorizado!" });
+    }
+
+    //const eventsList = await findAll("events");
+    return res.json({ resultSet: eventsList });
+});
 
 //endpoint para utilizado para obter os detalhes de determinado evento
 app.post("/eventDetails", async (req, res) => {
@@ -192,6 +209,20 @@ async function findAll(table) {
 
     try {
         const findResult = await dbConn.db(database).collection(table).find({}).toArray();
+        await dbConn.close();
+        return findResult;
+    } catch (err) {
+        console.log(err);
+    } finally {
+        await dbConn.close();
+    }
+}
+
+async function findEvent(event){
+    const dbConn = new MongoClient(uri);
+
+    try {
+        const findResult = await dbConn.db(database).find({name: event}).toArray();
         await dbConn.close();
         return findResult;
     } catch (err) {
