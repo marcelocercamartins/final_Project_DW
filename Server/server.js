@@ -46,7 +46,7 @@ app.post("/signUp", async (req, res) => {
             await insertLinesOnDatabase("users", newUser);
 
             sendEmail(email);
-            return res.status(201).send({ msg: `Criado utilizador ${username}` });
+            return res.status(201).send({ msg: `` });
         } catch (err) {
             console.error("Error hashing password: ", err);
             return res.status(500).send({ msg: 'Erro ao criar utilizador' });
@@ -66,22 +66,22 @@ app.post("/login", async (req, res) => {
     const findUser = await findOneResult("users", { username: name });
 
     if (findUser != null) {
-        // Compare the provided password with the hashed password in the database
+        
         bcrypt.compare(password, findUser.password, (err, isMatch) => {
             if (err) {
-                // Handle hashing error
+                
                 console.error("Error comparing password: ", err);
                 return res.status(500).json({ msg: "Erro de Servidor" });
             }
 
             if (isMatch) {
                 console.log(isMatch);
-                // Passwords match, proceed to create and send token
+                
                 const user = { username: name, password: findUser.password };
                 const token = jwt.sign(user, secret);
                 return res.status(200).json({ auth: true, token: token, msg: "" });
             } else {
-                // Passwords do not match
+                
                 return res.status(401).json({ msg: "Password inválida!" });
             }
         });
@@ -122,20 +122,14 @@ app.post("/addEvent", async (req, res) => {
 
 // registeredEvents   não existe necessidade de verificar token   os eventos registados qualquer um pode ver
 app.get("/registeredEvents", async (req, res) => {
-    const decoded = verifyToken(req.header('token'));
-    if (!decoded) {
-        return res.status(401).json({ msg: "Utilizador não autenticado ou não autorizado!" });
-    }
+
     const eventsList = await findAll("events");
     return res.json({ resultSet: eventsList });
 });
 
 // endpoint utilizado para fazer uma pesquisa de eventos especifica
 app.post("/searchForEvents", async (req, res) => {
-    const decoded = verifyToken(req.header('token'));
-    if (!decoded) {
-        return res.status(401).json({ msg: "Utilizador não autenticado ou não autorizado!" });
-    }
+
     const event = req.body;
     const eventsList = await findEvent(event);
     return res.json({ resultSet: eventsList });
@@ -165,9 +159,9 @@ app.post("/eventDetails", async (req, res) => {
     return res.json({ resultSet: eventInfo });
 });
 
-app.patch("/addUserToEvent", async (req, res) => {
-    const eventName = req.body.eventName; // The name of the event.
-    const userName = req.body.userName; // The name of the user to add to the event.
+app.patch("/addEventToUser", async (req, res) => {
+    const userName = req.body.userName; 
+    const eventName = req.body.eventName; 
 
     const decoded = verifyToken(req.header('token'));
     if (!decoded) {
@@ -175,16 +169,14 @@ app.patch("/addUserToEvent", async (req, res) => {
     }
 
     try {
-        const result = await addUserToEvent(eventName, userName);
+        const result = await addEventToUser(eventName, userName);
         if (result.matchedCount === 0) {
-            res.status(404).json({ msg: "Event not found." });
-        } else if (result.modifiedCount === 0) {
-            res.status(409).json({ msg: "User already attending or error occurred." });
-        } else {
-            res.status(200).json({ msg: "User added to event successfully." });
+            res.status(404).json({ msg: "Evento nao foi encontrado" });
+        }  else {
+            res.status(200).json({ msg: "Evento adicionado ao utilizador com sucesso" });
         }
     } catch (err) {
-        res.status(500).json({ msg: "Failed to add user to the event." });
+        res.status(500).json({ msg: "Falha ao adicionar evento ao utilizador" });
     }
 });
 
@@ -199,29 +191,15 @@ app.delete("/deleteEvent", async (req, res) => {
     try {
         const result = await deleteEvent(eventName);
         if (result.deletedCount === 0) {
-            res.status(404).json({ msg: "Event not found or already deleted." });
+            res.status(404).json({ msg: "Evento não foi encontrado ou já foi anteriormente apagado" });
         } else {
-            res.status(200).json({ msg: "Event deleted successfully." });
+            res.status(200).json({ msg: "Evento apagado com sucesso" });
         }
     } catch (err) {
-        res.status(500).json({ msg: "Failed to delete the event." });
+        res.status(500).json({ msg: "Falha ao remover o evento" });
     }
 });
 
-// Acesso à informação somente se autorizado
-//app.get("/listarDados", (req, res) => {
-//    const decoded = verifyToken(req.header('token'));
-//    if (!decoded) {
-//        return res.status(401).json({ msg: "Utilizador não autenticado ou não autorizado!" });
-//    }
-//    const nome = decoded.username;
-//
-//    if (dados) {
-//        res.status(200).json(dados);
-//    } else {
-//        res.status(404).json({ msg: "Dados não encontrados!" });
-//    }
-//});
 
 async function verifyIfEventAlreadyOnList(userInfo, event) {
     const userEvents = userInfo.events;
@@ -335,14 +313,14 @@ async function deleteEvent(eventName) {
 }
 
 //Função de Update
-async function addUserToEvent(eventName, userName) {
+async function addEventToUser(eventName, userName) {
     const dbConn = new MongoClient(uri);
 
     try {
         await dbConn.connect();
-        const updateResult = await dbConn.db(database).collection("events").updateOne(
-            { name: eventName },
-            { $push: { aderentes: userName } }
+        const updateResult = await dbConn.db(database).collection("users").updateOne(
+            { username: userName },
+            { $push: { events: eventName } }
         );
         
         console.log(`${updateResult.matchedCount} event(s) matched.`);
