@@ -7,6 +7,7 @@ const fs = require('fs');
 const { MongoClient } = require('mongodb');
 const nodemailer = require('nodemailer');
 const { decode } = require('punycode');
+const bcrypt = require('bcrypt');
 
 const app = express();
 const PORT = process.env.PORT;
@@ -36,13 +37,22 @@ app.post("/signUp", async (req, res) => {
             return res.status(400).send({ msg: 'Password deve ter 5 ou mais caracteres' });
         }
 
-        const newUser = { username: username, email: email, password: password, events: [] };
-        insertLinesOnDatabase("users", newUser);
+        // Hash password with bcrypt
+        const saltRounds = 10;
+        try {
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        sendEmail(email);
-        return res.status(201).send({ msg: `Criado utilizador ${username}` });
+            const newUser = { username: username, email: email, password: hashedPassword, events: [] };
+            await insertLinesOnDatabase("users", newUser);
+
+            sendEmail(email);
+            return res.status(201).send({ msg: `Criado utilizador ${username}` });
+        } catch (err) {
+            console.error("Error hashing password: ", err);
+            return res.status(500).send({ msg: 'Erro ao criar utilizador' });
+        }
     } else {
-        console.log("fodasse entrou no else");
+        console.log("Utilizador já existe");
         return res.status(409).send({ msg: 'Utilizador já existe' });
     }
 });
@@ -55,20 +65,32 @@ app.post("/login", async (req, res) => {
 
     const findUser = await findOneResult("users", { username: name });
 
-    const user = { username: name, password: password };
-
     if (findUser != null) {
-        if (findUser.password == password) {
-            token = jwt.sign(user, secret);
-            return res.status(201).json({ auth: true, token: token, msg: "" });
-        }
-        else {
-            return res.status(401).json({ msg: "Password inválida!" })
-        }
+        // Compare the provided password with the hashed password in the database
+        bcrypt.compare(password, findUser.password, (err, isMatch) => {
+            if (err) {
+                // Handle hashing error
+                console.error("Error comparing password: ", err);
+                return res.status(500).json({ msg: "Erro de Servidor" });
+            }
+
+            if (isMatch) {
+                console.log(isMatch);
+                // Passwords match, proceed to create and send token
+                const user = { username: name, password: findUser.password };
+                const token = jwt.sign(user, secret);
+                return res.status(200).json({ auth: true, token: token, msg: "" });
+            } else {
+                // Passwords do not match
+                return res.status(401).json({ msg: "Password inválida!" });
+            }
+        });
     } else {
+        // User not found
         return res.status(404).json({ msg: "Utilizador não encontrado!" });
     }
 });
+
 
 app.post("/addEvent", async (req, res) => {
     //verificar se existe um utilizador logado
@@ -100,12 +122,20 @@ app.post("/addEvent", async (req, res) => {
 
 // registeredEvents   não existe necessidade de verificar token   os eventos registados qualquer um pode ver
 app.get("/registeredEvents", async (req, res) => {
+    const decoded = verifyToken(req.header('token'));
+    if (!decoded) {
+        return res.status(401).json({ msg: "Utilizador não autenticado ou não autorizado!" });
+    }
     const eventsList = await findAll("events");
     return res.json({ resultSet: eventsList });
 });
 
 // endpoint utilizado para fazer uma pesquisa de eventos especifica
 app.post("/searchForEvents", async (req, res) => {
+    const decoded = verifyToken(req.header('token'));
+    if (!decoded) {
+        return res.status(401).json({ msg: "Utilizador não autenticado ou não autorizado!" });
+    }
     const event = req.body;
     const eventsList = await findEvent(event);
     return res.json({ resultSet: eventsList });
@@ -126,6 +156,11 @@ app.post("/myEvents", async (req, res) => {
 app.post("/eventDetails", async (req, res) => {
     const eventName = req.body.event;
 
+    const decoded = verifyToken(req.header('token'));
+    if (!decoded) {
+        return res.status(401).json({ msg: "Utilizador não autenticado ou não autorizado!" });
+    }
+
     const eventInfo = await findOneResult("events", { name: eventName });
     return res.json({ resultSet: eventInfo });
 });
@@ -133,6 +168,11 @@ app.post("/eventDetails", async (req, res) => {
 app.patch("/addUserToEvent", async (req, res) => {
     const eventName = req.body.eventName; // The name of the event.
     const userName = req.body.userName; // The name of the user to add to the event.
+
+    const decoded = verifyToken(req.header('token'));
+    if (!decoded) {
+        return res.status(401).json({ msg: "Utilizador não autenticado ou não autorizado!" });
+    }
 
     try {
         const result = await addUserToEvent(eventName, userName);
@@ -152,6 +192,10 @@ app.patch("/addUserToEvent", async (req, res) => {
 app.delete("/deleteEvent", async (req, res) => {
     const eventName = req.body.eventName; // Nome do evento deve vir no body, caso não venha é somente necessário introduzir variável de entrada
 
+    const decoded = verifyToken(req.header('token'));
+    if (!decoded) {
+        return res.status(401).json({ msg: "Utilizador não autenticado ou não autorizado!" });
+    }
     try {
         const result = await deleteEvent(eventName);
         if (result.deletedCount === 0) {
