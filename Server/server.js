@@ -130,6 +130,22 @@ app.post("/eventDetails", async (req, res) => {
     return res.json({ resultSet: eventInfo });
 });
 
+//endpoint utilizado para remoção de eventos
+app.delete("/deleteEvent", async (req, res) => {
+    const eventName = req.body.eventName; // Nome do evento deve vir no body, caso não venha é somente necessário introduzir variável de entrada
+
+    try {
+        const result = await deleteEvent(eventName);
+        if (result.deletedCount === 0) {
+            res.status(404).json({ msg: "Event not found or already deleted." });
+        } else {
+            res.status(200).json({ msg: "Event deleted successfully." });
+        }
+    } catch (err) {
+        res.status(500).json({ msg: "Failed to delete the event." });
+    }
+});
+
 // Acesso à informação somente se autorizado
 //app.get("/listarDados", (req, res) => {
 //    const decoded = verifyToken(req.header('token'));
@@ -158,6 +174,11 @@ async function verifyIfEventAlreadyOnList(userInfo, event) {
 }
 
 //funções Base de dados
+
+//Para introduzirem eventos na base de dados usem esta função com o as seguintes entradas
+//insertLinesOnDatabase("events",{name:'teste',date:'16-06-2023   16h30m',location:'teste',gps:'38.7673, -9.09381',descripton:'“Imaginem...',aderentes:[],
+//imageURL:'https://www.fproducao.pt/public/uploads/espectaculos/novo_site/fotos_de_capa/Uma%20Nespera%20no%20Cu%20-%20O%20Musical/Nespera_Musical_Site_Poster_Final.jpg'})
+
 async function insertLinesOnDatabase(table, valuetToInsert) {
     const dbConn = new MongoClient(uri);
 
@@ -167,6 +188,7 @@ async function insertLinesOnDatabase(table, valuetToInsert) {
             if (err) {
                 res.send(JSON.stringify(err));
             } else {
+                
                 res.send("inserted!");
             }
         });
@@ -227,6 +249,24 @@ async function findEvent(event){
         return findResult;
     } catch (err) {
         console.log(err);
+    } finally {
+        await dbConn.close();
+    }
+}
+
+//Função de delete
+async function deleteEvent(eventName) {
+    const dbConn = new MongoClient(uri);
+
+    try {
+        await dbConn.connect();
+        const deleteResult = await dbConn.db(database).collection("events").deleteOne({ name: eventName });
+        
+        console.log(`${deleteResult.deletedCount} event(s) was/were deleted.`);
+        return deleteResult;
+    } catch (err) {
+        console.error("Error deleting event: ", err);
+        throw err; // Rethrowing the error is important for error handling in calling functions.
     } finally {
         await dbConn.close();
     }
