@@ -130,6 +130,24 @@ app.post("/eventDetails", async (req, res) => {
     return res.json({ resultSet: eventInfo });
 });
 
+app.patch("/addUserToEvent", async (req, res) => {
+    const eventName = req.body.eventName; // The name of the event.
+    const userName = req.body.userName; // The name of the user to add to the event.
+
+    try {
+        const result = await addUserToEvent(eventName, userName);
+        if (result.matchedCount === 0) {
+            res.status(404).json({ msg: "Event not found." });
+        } else if (result.modifiedCount === 0) {
+            res.status(409).json({ msg: "User already attending or error occurred." });
+        } else {
+            res.status(200).json({ msg: "User added to event successfully." });
+        }
+    } catch (err) {
+        res.status(500).json({ msg: "Failed to add user to the event." });
+    }
+});
+
 //endpoint utilizado para remoção de eventos
 app.delete("/deleteEvent", async (req, res) => {
     const eventName = req.body.eventName; // Nome do evento deve vir no body, caso não venha é somente necessário introduzir variável de entrada
@@ -272,6 +290,28 @@ async function deleteEvent(eventName) {
     }
 }
 
+//Função de Update
+async function addUserToEvent(eventName, userName) {
+    const dbConn = new MongoClient(uri);
+
+    try {
+        await dbConn.connect();
+        const updateResult = await dbConn.db(database).collection("events").updateOne(
+            { name: eventName },
+            { $push: { aderentes: userName } }
+        );
+        
+        console.log(`${updateResult.matchedCount} event(s) matched.`);
+        console.log(`${updateResult.modifiedCount} event(s) updated.`);
+        return updateResult;
+    } catch (err) {
+        console.error("Error adding user to event: ", err);
+        throw err;
+    } finally {
+        await dbConn.close();
+    }
+}
+
 //funções de apoio
 function verifyToken(token) {
     try {
@@ -311,6 +351,7 @@ function sendEmail(email) {
     }
 
 }
+
 
 app.use(express.static('public'));
 app.listen(PORT, () => {
