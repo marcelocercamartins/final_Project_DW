@@ -11,7 +11,7 @@
 
     json = await answer.json();
     switch (answer.status) {
-        case 201:
+        case 200:
             {
                 // login ok
                 localStorage.setItem("token", json.token);
