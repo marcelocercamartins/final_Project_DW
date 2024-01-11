@@ -92,7 +92,7 @@ app.post("/login", async (req, res) => {
 });
 
 
-app.post("/addEvent", async (req, res) => {
+app.post("/addEventToUser", async (req, res) => {
     //verificar se existe um utilizador logado
     const decoded = verifyToken(req.header('token'));
     if (!decoded) {
@@ -109,12 +109,14 @@ app.post("/addEvent", async (req, res) => {
     const userEventsList = userInfo.events;
 
     const verifyIfAlreadyAdded = verifyIfEventAlreadyOnList(userInfo, eventName);
+    
 
     if (verifyIfAlreadyAdded == 0) {
         const updatedList = userEventsList.concat(eventName);
         updateObjectField("users", userID, updatedList);
-    } else {
-        return res.status(360).json({ msg: "Este evento já se encontra na sua lista de eventos!" });
+        return res.status(201).json({ msg: "" });
+        } else {
+        return res.status(360).json({ msg: "" });
     }
 
 })
@@ -150,34 +152,8 @@ app.post("/myEvents", async (req, res) => {
 app.post("/eventDetails", async (req, res) => {
     const eventName = req.body.event;
 
-    const decoded = verifyToken(req.header('token'));
-    if (!decoded) {
-        return res.status(401).json({ msg: "Utilizador não autenticado ou não autorizado!" });
-    }
-
     const eventInfo = await findOneResult("events", { name: eventName });
     return res.json({ resultSet: eventInfo });
-});
-
-app.patch("/addEventToUser", async (req, res) => {
-    const userName = req.body.userName; 
-    const eventName = req.body.eventName; 
-
-    const decoded = verifyToken(req.header('token'));
-    if (!decoded) {
-        return res.status(401).json({ msg: "Utilizador não autenticado ou não autorizado!" });
-    }
-
-    try {
-        const result = await addEventToUser(eventName, userName);
-        if (result.matchedCount === 0) {
-            res.status(404).json({ msg: "Evento nao foi encontrado" });
-        }  else {
-            res.status(200).json({ msg: "Evento adicionado ao utilizador com sucesso" });
-        }
-    } catch (err) {
-        res.status(500).json({ msg: "Falha ao adicionar evento ao utilizador" });
-    }
 });
 
 //endpoint utilizado para remoção de eventos
@@ -201,15 +177,14 @@ app.delete("/deleteEvent", async (req, res) => {
 });
 
 
-async function verifyIfEventAlreadyOnList(userInfo, event) {
+function verifyIfEventAlreadyOnList(userInfo, event) {
     const userEvents = userInfo.events;
 
     for (var i = 0; i < userEvents.length; i++) {
-        if (userEvents[0] == event) {
+        if (userEvents[i] == event) {
             return 1;
         }
     }
-
     return 0;
 }
 
@@ -307,28 +282,6 @@ async function deleteEvent(eventName) {
     } catch (err) {
         console.error("Error deleting event: ", err);
         throw err; // Rethrowing the error is important for error handling in calling functions.
-    } finally {
-        await dbConn.close();
-    }
-}
-
-//Função de Update
-async function addEventToUser(eventName, userName) {
-    const dbConn = new MongoClient(uri);
-
-    try {
-        await dbConn.connect();
-        const updateResult = await dbConn.db(database).collection("users").updateOne(
-            { username: userName },
-            { $push: { events: eventName } }
-        );
-        
-        console.log(`${updateResult.matchedCount} event(s) matched.`);
-        console.log(`${updateResult.modifiedCount} event(s) updated.`);
-        return updateResult;
-    } catch (err) {
-        console.error("Error adding user to event: ", err);
-        throw err;
     } finally {
         await dbConn.close();
     }

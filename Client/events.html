@@ -57,8 +57,8 @@
   </nav>
 
   <!-- div para pesquisa de eventos -->
-  <div>
-    <input id="searchBox" type="text" name="searchBox" placeholder="Pesquisa" oninput="eventSearcher(this)">
+  <div class="searchContainer">
+    <input id="searchBox" type="text" name="searchBox" placeholder="Pesquisa" oninput="eventSearcher()">
   </div>
 
   <!-- div com os eventos -->
@@ -76,7 +76,8 @@
       <div class="event-details" id="eventHourPopupDiv"></div>
       <div class="event-details" id="eventDescriptionPopupDiv"></div>
       <div class="event-map" id="eventMapAPIDiv"></div>
-      <button onclick="addToMyEvents()">Adicionar aos Meus Eventos</button>
+      <button class="btn btn-primary" onclick="addToMyEvents()">Adicionar aos Meus Eventos</button>
+      <span id="warning"></span>
   </div>
   
   <!-- Footer-->
@@ -89,17 +90,17 @@
   <script>
     window.onload = function () {
       renderPageAfterLoadHtmlElements();
-      displayEvents(1);
+      displayEvents();
     };
 
     window.addEventListener('scroll', function() {
       var py5Element = document.querySelector('.py-5');
       
-      // Verifica se o usuário chegou ao final da página
+      // Verifica se o utilizador chegou ao final da página
       if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight) {
-        py5Element.style.display = 'block'; // Exibe o elemento
+        py5Element.style.display = 'block'; 
       } else {
-        py5Element.style.display = 'none'; // Oculta o elemento
+        py5Element.style.display = 'none'; 
       }
     });
   </script>
