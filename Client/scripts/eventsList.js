@@ -1,4 +1,4 @@
-// função que trata de apresentar os eventos registados   não há necessidade de fazer verificação de tokes    qualquer um pode ver
+// função que trata de apresentar os eventos registados não há necessidade de fazer verificação de tokens qualquer um pode ver
 async function displayEvents() {
         const answer = await makeRequest("http://localhost:8003/registeredEvents", {
                 method: "GET",
