@@ -1,4 +1,4 @@
-async function login() {
+    async function login() {
     const name = document.getElementById("username").value;
     const password = document.getElementById("password").value;
     const userObj = { username: name, password: password};
@@ -18,12 +18,19 @@ async function login() {
                 localStorage.setItem("login", true);
                 localStorage.setItem("activeUser", name);
                 document.getElementById("returnMessage").innerHTML = "";
+
                 window.location.href = "index.html"; //redireciona para a página principal
                 break;
             }
-        default:
+        case 401:
             {
-                // Erro detetado
+                // Password errada
+                document.getElementById("returnMessage").innerHTML = json.msg;
+                break;
+            }
+        case 404:
+            {
+                // Utilizador não encontrado
                 document.getElementById("returnMessage").innerHTML = json.msg;
                 break;
             }
@@ -48,6 +55,18 @@ async function signUp() {
     json = await answer.json();
 
     switch (answer.status) {
+        case 409:
+            {
+                // Utilizador já existe
+                document.getElementById("returnMessage").innerHTML = json.msg;
+                break;
+            }
+        case 400:
+            {
+                // Password Incorreta
+                document.getElementById("returnMessage").innerHTML = json.msg;
+                break;
+            }
         case 201:
             {
                 // Utilizador registado
@@ -55,9 +74,8 @@ async function signUp() {
                 window.location.href = "index.html";
                 break;
             }
-        default:
+        case 101:
             {
-                // Erro detetado
                 document.getElementById("returnMessage").innerHTML = json.msg;
                 break;
             }
@@ -73,6 +91,43 @@ function logout() {
 }
 
 
+async function listar() {
+    const answer = await makeRequest("http://localhost:8003/listarDados", {
+        method: "GET",
+        headers: {
+            token: localStorage.getItem("token"),
+            "Content-type": "application/json; charset=UTF-8",
+        },
+    });
+    dados = await answer.json();
+    switch (answer.status) {
+        case 200:
+            {
+                // obteve os dados
+                let lista = "";
+                for (dado of dados) {
+                    lista += "ID: " + dado.id + " - Nome: " + dado.nome + "<br>";
+                }
+                document.getElementById("divListar").innerHTML = lista;
+                document.getElementById("pMsg").innerHTML = "";
+                break;
+            }
+        case 401:
+            {
+                // Utilizador não autenticado ou não autorizado
+                document.getElementById("pMsg").innerHTML = dados.msg;
+                break;
+            }
+        case 404:
+            {
+                // Dados não encontrados
+                document.getElementById("pMsg").innerHTML = dados.msg;
+                break;
+            }
+    }
+}
+
+
 async function makeRequest(url, options) {
     try {
         const response = await fetch(url, options);
@@ -81,7 +136,6 @@ async function makeRequest(url, options) {
         console.log(err);
     }
 }
-
 
 function renderPageAfterLoadHtmlElements() {
     const login = localStorage.getItem("login")
@@ -100,4 +154,3 @@ function renderPageAfterLoadHtmlElements() {
       document.getElementById("myEventsNavBar").style.display = 'none';
     }
   }
-

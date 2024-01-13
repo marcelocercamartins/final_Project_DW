@@ -5,9 +5,8 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Event Eagle</title>
-  <script src="scripts/userHandle.js"></script>
-  <script src="scripts/loginSignUpVerifications.js"></script>
+  <title>Exemplo</title>
+  <script src="scripts/script.js"></script>
   <link rel="stylesheet" href="css/login_register.css" />
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -28,18 +27,18 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item"><a class="nav-link active" aria-current="page" href="index.html">Início</a></li>
               <li class="nav-item"><a class="nav-link" href="">Eventos</a></li>
-              <li class="nav-item"><a class="nav-link" href="">Os meus eventos</a></li>
+              <li class="nav-item"><a class="nav-link" href="#">Os meus eventos</a></li>
             </ul>
             <form class="d-flex">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0" >
                 <li class="nav-item dropdown" id="activeUser">
-                  <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
                     <span id="activeUser_text">{User}</span>
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li><a class="dropdown-item" href="">Definições</a></li>
-                    <li><a class="dropdown-item" href="" onclick="logout()">Sair</a></li>
+                    <li><a class="dropdown-item" href="#">Definições</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="logout()">Sair</a></li>
                   </ul>
                 </li>
               </ul>
@@ -60,7 +59,7 @@
         <input type="text" id="email" class="fadeIn second" name="email" placeholder="Email">
         <input type="text" id="username" class="fadeIn third" name="login" placeholder="Nome do utilizador">
         <input type="text" id="password" class="fadeIn fourth" name="password" placeholder="Palavra chave"> 
-        <button type="button" class="fadeIn fifht btn btn-primary" onclick="validateSignUp()">Registar</button>
+        <button type="button" class="fadeIn fifht btn btn-primary" onclick="signUp()">Registar</button>
         <div class = "fadeIn sixth"><p></p></div>
         <div id="formFooter"><p id ="returnMessage"></p></div>
       </div>
