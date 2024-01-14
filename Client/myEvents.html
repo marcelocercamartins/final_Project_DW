@@ -61,13 +61,14 @@
     <div class="row">
         <div class="col-md-9 mb40">
                 <div class="post-content">
-                    <h4 class="userDescription">About Me</h4>
+                    <h3 class="userDescription">About Me</h3>
                     <div class="media mb40">
                         <i class="d-flex mr-3 fa fa-user-circle fa-5x text-primary"></i>
-                        <div class="media-body">
-                            <h5 class="mt-0 font700"><br>Jane Doe</h5> Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                          <hr>
-                          </div>
+                        <br><div id="output"></div>
+                        <input type="text" id="information" placeholder="Personalize your description">
+                        <button onclick="saveContent()">Save</button>
+                        <hr>
+                          
                     </div>
                 </div> 
         </div>
@@ -76,12 +77,12 @@
             <div class="mb40">
                 <h4 class="sidebar-title">Menu</h4>
                 <ul class="list-unstyled categories">
-                    <li id="criarEvento"><a href="#" id="criarEventoLink" onclick="createPosts()">Criar evento</a></li>
-                    <li><a href="#">Ver os meus eventos</a>
-                        <ul class="list-unstyled">
-                            <li><a href="#"></a></li>
-                            <li><a href="#"></a></li>
-                        </ul>
+                    <li id="criarEvento"><a href="javascript:void(0)" id="criarEventoLink" onclick="createPosts()">Criar evento</a></li>
+                    <li id="verEventos"><a href="javascript:void(0)" id="verEvento" onclick="managePosts()">Ver os meus eventos</a>
+                        <!-- <ul class="list-unstyled">
+                            <li><a href="javascript:void(0)"></a></li>
+                            <li><a href="javascript:void(0)"></a></li>
+                        </ul> -->
                     </li>
                 </ul>
             </div>
@@ -99,80 +100,44 @@
     </div>
   </div>
 
+  
+
   <section class="row align-items-stretch photos" id="section-photos">
     <div class="col-12">
-      <div class="row align-items-stretch text-center">
-
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <a href="./assets/img/03.jpg" class="d-block photo-item" data-fancybox="gallery">
-            <img src="./assets/img/03.jpg" alt="Image" class="img-fluid mb-0">
-          </a>
-          <h6 class="heading">Nome do Evento</h6>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <a href="./assets/img/02.jpg" class="d-block photo-item" data-fancybox="gallery">
-            <img src="./assets/img/02.jpg" alt="Image" class="img-fluid mb-0">
-          </a>
-          <h6 class="heading">Nome do Evento</h6>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-          <a href="./assets/img/01.jpg" class="d-block photo-item" data-fancybox="gallery">
-            <img src="./assets/img/01.jpg" alt="Image" class="img-fluid mb-0">
-          </a>
-          <h6 class="heading">Nome do Evento</h6>
-        </div>
-
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up">
-          <a href="./assets/img/02.jpg" class="d-block photo-item" data-fancybox="gallery">
-            <img src="./assets/img/02.jpg" alt="Image" class="img-fluid mb-0">
-          </a>
-          <h6 class="heading">Nome do Evento</h6>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-          <a href="" class="d-block photo-item" data-fancybox="gallery">
-            <img src="" alt="Image" class="img-fluid mb-0">
-          </a>
-          <h6 class="heading">Nome do Evento</h6>
-        </div>
-        <div class="col-6 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-          <a href="" class="d-block photo-item" data-fancybox="gallery">
-            <img src="" alt="Image" class="img-fluid mb-0">
-          </a>
-          <h6 class="heading">Nome do Evento</h6>
-        </div>
-
+      <div class="row align-items-stretch text-center" id="events-container">
+        <!-- Images will be dynamically added here -->
       </div>
-
     </div>
-
   </section>
 </div>
 
   <div id="eventoSquare">
-    <form action="">
+    
       <label for="imageInput">Image:</label>
-      <input type="file" id="imageInput" name="imageInput">
+      <input type="url" id="imageInput" name="imageInput">
       
-
       <label for="titleInput">Title:</label>
       <input type="text" id="titleInput" name="titleInput" placeholder="Title">
     
-
       <label for="dateInput">Date:</label>
       <input type="date" id="dateInput" name="dateInput" placeholder="ddmmaaaa">
 
-      <label for="durationInput">Duration:</label>
-      <input type="text" id="durationInput" name="durationInput" placeholder="00h00">
+      <label for="locationInput">Location:</label>
+      <input type="text" id="locationInput" name="locationInput" placeholder="Meo Arena">
+      
+      <label for="gpsInput">Gps:</label>
+      <input type="text" id="gpsInput" name="gpsInput"></input>
       <br>
 
       <label for="descriptionInput">Description:</label>
       <textarea id="descriptionInput" name="descriptionInput" placeholder="Event Description"></textarea>
       <br>
       
-      <input type="submit" value="Submit">
-    </form>
+      <button type="submit" onclick="addEvent()">Submit</button>
+    
   </div>
 </div>
+
 
   <!-- Footer-->
 <footer class="py-5 bg-black">
@@ -184,7 +149,27 @@
   <script>
     window.onload = function () {
       renderPageAfterLoadHtmlElements();
+      myPosts();
+      let textInputValue = localStorage.getItem("information");
+      let outputElement = document.getElementById("output");
+      outputElement.innerHTML = textInputValue;
+    
+
+  
+
+
     };
+    window.addEventListener('scroll', function() {
+      var py5Element = document.querySelector('.py-5');
+  
+      
+      // Verifica se o utilizador chegou ao final da página
+      if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight) {
+        py5Element.style.display = 'block'; 
+      } else {
+        py5Element.style.display = 'none'; 
+      }
+    });
   </script>
 </body>
 

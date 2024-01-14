@@ -11,6 +11,7 @@ const bcrypt = require('bcrypt');
 const app = express();
 const PORT = process.env.PORT;
 const secret = process.env.SECRET;
+
 const uri = process.env.DBURI;
 const database = process.env.DATABASE;
 const emailFrom = process.env.EMAILFROM;
@@ -23,7 +24,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-/////////////////API Endepoints////////////////////////
+/////////////////API Endpoints////////////////////////
 
 // Criar novo utilizador
 app.post("/signUp", async (req, res) => {
@@ -94,7 +95,7 @@ app.post("/addEventToUser", async (req, res) => {
     userAuthorization(req.header('token'));
 
     //Adição do evento ao utilizador
-    const userName = decoded.username;
+    const userName = decode.username;
     const eventName = req.body.event;
 
     //Para atualizar apenas o array de eventos tenho de tirar o array atual adicionar o evento novo e dps atualizar o campo
@@ -119,7 +120,7 @@ app.post("/addEventToUser", async (req, res) => {
 
 // registeredEvents   não existe necessidade de verificar token os eventos registados qualquer um pode ver
 app.get("/registeredEvents", async (req, res) => {
-    const eventsList = await findAll("events");
+    const eventsList = await findAll("events", {});
     return res.json({ resultSet: eventsList });
 });
 
@@ -130,19 +131,15 @@ app.post("/searchForEvents", async (req, res) => {
     return res.json({ resultSet: eventsList });
 });
 
-//endpoint utilizado para receber os eventos de um utilizador
-app.post("/myEvents", async (req, res) => {
-    userAuthorization(req.header('token'));
 
-    //const eventsList = await findAll("events");
-    return res.json({ resultSet: eventsList });
-});
+
+
 
 //endpoint para utilizado para obter os detalhes de determinado evento
 app.post("/eventDetails", async (req, res) => {
     const eventName = req.body.event;
 
-    const eventInfo = await findOneResult("events", { name: eventName });
+    const eventInfo = await findOneResult("events", {});
     return res.json({ resultSet: eventInfo });
 });
 
@@ -164,6 +161,51 @@ app.delete("/deleteEvent", async (req, res) => {
     }
 });
 
+//endpoint para criar evento
+app.post("/addEvent", async (req, res) => {
+    userAuthorization(req.header('token'));
+    console.log("Received Data:", req.body);
+    const title = req.body.name;
+    const date = req.body.date;
+    const location = req.body.location;
+    const gps = req.body.gps;
+    const description = req.body.description;
+    const image= req.body.imageURL;
+    const username = req.body.username;
+
+    try {
+        const insertValue = {name: title, date: date, location: location, gps: gps, description: description, imageURL: image, username: username};
+        console.log("Insert Value:", insertValue);
+        await insertLinesOnDatabase("events", insertValue);
+        res.status(200).json({ msg: "Evento adicionado com sucesso" });
+    } catch (err) {
+        res.status(500).json({ msg: "Falha ao adicionar o evento" });
+    }
+});
+
+app.post("/userInfoUpdate", async (req,res) => {
+    userAuthorization(req.header('token'));
+    const information = req.body.information;
+    const username = req.body.username;
+    const filter = { username: username};
+    console.log(filter);
+    const include = { information: information };
+    console.log(include);
+
+    await updateObjectField2("users", filter, include);
+    res.status(200).json({ msg: "Informação adicionada com sucesso" });
+});
+    
+//endpoint utilizado para receber os eventos de um utilizador
+app.post("/myEvents", async (req, res) => {
+    userAuthorization(req.header('token'));
+    const username = req.body.username;
+    const filter = { username: username};
+    
+    const eventsList = await findAll("events", filter);
+    console.log(eventsList);
+    return res.json({ resultSet: eventsList });
+});
 
 function verifyIfEventAlreadyOnList(userInfo, event) {
     const userEvents = userInfo.events;
@@ -201,7 +243,7 @@ async function insertLinesOnDatabase(table, valuetToInsert) {
         await dbConn.close();
     }
 }
-
+//REDUNDANCIA A TRABALHAR, mas por agora funca
 async function updateObjectField(table, id, value) {
     const dbConn = new MongoClient(uri);
     try {
@@ -213,6 +255,18 @@ async function updateObjectField(table, id, value) {
         await dbConn.close();
     }
 }
+
+async function updateObjectField2(table, filter,  value) {
+    const dbConn = new MongoClient(uri);
+    try {
+        const insert_db = dbConn.db(database);
+        insert_db.collection(table).updateOne(filter, {$set: { "information": value } })
+    } catch (err) {
+        console.log(err)
+    } finally {
+        await dbConn.close();
+    }
+} 
 
 async function findOneResult(table, findWhat) {
     const dbConn = new MongoClient(uri);
@@ -229,11 +283,11 @@ async function findOneResult(table, findWhat) {
 }
 
 //Função para obter os objetos todos de uma tabela
-async function findAll(table) {
+async function findAll(table, filter) {
     const dbConn = new MongoClient(uri);
 
     try {
-        const findResult = await dbConn.db(database).collection(table).find({}).toArray();
+        const findResult = await dbConn.db(database).collection(table).find(filter).toArray();
         await dbConn.close();
         return findResult;
     } catch (err) {

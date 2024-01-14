@@ -229,13 +229,89 @@ async function addToMyEvents() {
 }
 
 function createPosts(){
-        document.getElementById('criarEventoLink').addEventListener('click', function() {
-                let eventoSquare = document.getElementById('eventoSquare');
-                let anotherContainer = document.getElementById('another-container');
-                
-                
-                eventoSquare.style.display = 'block';
-                anotherContainer.style.display = 'none';
+        let eventoSquare = document.getElementById('eventoSquare');
+        let anotherContainer = document.getElementById('another-container');
+        
+        eventoSquare.style.display = 'block';
+        anotherContainer.style.display = 'none';
         // Change 'none' to 'block' to make the square appear
+}
 
-        });}
+function managePosts(){
+        let eventoSquare = document.getElementById('eventoSquare');
+        let anotherContainer = document.getElementById('another-container');
+        eventoSquare.style.display = 'none';
+        anotherContainer.style.display = 'none';
+}
+
+async function addEvent() {
+        window.location.href = "myEvents.html";
+        const title = document.getElementById("titleInput").value;
+        const date = document.getElementById("dateInput").value;
+        const location = document.getElementById("locationInput").value;
+        const gps = document.getElementById("gpsInput").value;
+        const description = document.getElementById("descriptionInput").value;
+        const image = document.getElementById("imageInput").value;
+        const username = localStorage.getItem("activeUser");
+    
+        const postObj = {name: title, date: date, location: location, gps: gps, description: description, imageURL: image, username: username};
+        console.log(postObj)
+        const answer = await makeRequest("http://localhost:8003/addEvent", {
+            method: "POST",
+            body: JSON.stringify(postObj),
+            headers: {
+                token: localStorage.getItem("token"),
+                "Content-type": "application/json; charset=UTF-8" },
+        });
+    
+}
+    
+async function myPosts() {
+        const userName = localStorage.getItem("activeUser");
+        const userObj = {username: userName};
+        const answer = await makeRequest("http://localhost:8003/myEvents", {
+          method: "POST",
+          body: JSON.stringify(userObj),
+          headers: {
+            token: localStorage.getItem("token"),
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        });
+        const myEventsList = await answer.json();
+      
+        createList(myEventsList.resultSet);
+      }
+      
+      function createList(events) {
+        const eventsContainer = document.getElementById("events-container");
+      
+        events.slice(-3,events.length).forEach((event) => {
+          const eventElement = document.createElement("div");
+          eventElement.className = "col-6 col-md-6 col-lg-4";
+          eventElement.dataset.aos = "fade-up";
+          eventElement.dataset.aosDelay = "100";
+      
+          const linkElement = document.createElement("a");
+          linkElement.href = event.imageURL; 
+          linkElement.className = "d-block photo-item";
+          linkElement.dataset.fancybox = "gallery";
+      
+          const imgElement = document.createElement("img");
+          imgElement.src = event.imageURL; 
+          imgElement.alt = "Image";
+          imgElement.className = "img-fluid mb-0";
+      
+          linkElement.appendChild(imgElement);
+      
+          const headingElement = document.createElement("h6");
+          headingElement.className = "heading";
+          headingElement.textContent = event.name;
+        
+      
+          eventElement.appendChild(linkElement);
+          eventElement.appendChild(headingElement);
+      
+          eventsContainer.appendChild(eventElement);
+        });
+      }
+
