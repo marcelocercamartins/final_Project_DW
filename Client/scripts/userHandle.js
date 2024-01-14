@@ -101,3 +101,27 @@ function renderPageAfterLoadHtmlElements() {
     }
   }
 
+async function saveContent() {
+    const information = document.getElementById("information").value;
+    let outputElement = document.getElementById("output");
+    outputElement.innerHTML = information;
+    
+    const userName = localStorage.getItem("activeUser");
+
+    const userObj = {information: information, username: userName};
+    localStorage.setItem("information", information);
+    
+    
+    
+    const answer = await makeRequest("http://localhost:8003/userInfoUpdate", {
+        method: "POST",
+        body: JSON.stringify(userObj),
+        headers: { 
+            token: localStorage.getItem("token"),
+            "Content-type": "application/json; charset=UTF-8" },
+});
+
+    await answer.json();
+
+  }
+
