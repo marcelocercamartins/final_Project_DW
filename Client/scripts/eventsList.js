@@ -245,6 +245,7 @@ function managePosts(){
 }
 
 async function addEvent() {
+        window.location.href = "myEvents.html";
         const title = document.getElementById("titleInput").value;
         const date = document.getElementById("dateInput").value;
         const location = document.getElementById("locationInput").value;
