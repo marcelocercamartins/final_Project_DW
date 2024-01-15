@@ -317,13 +317,25 @@ async function deleteEvent(eventName) {
 
     try {
         await dbConn.connect();
+
+        // Delete the event from the events collection
         const deleteResult = await dbConn.db(database).collection("events").deleteOne({ name: eventName });
-        
-        console.log(`${deleteResult.deletedCount} event(s) was/were deleted.`);
+        console.log(`${deleteResult.deletedCount} evento apagado`);
+
+        // Verificar se o evento foi apagado
+        if (deleteResult.deletedCount > 0) {
+            // Update dos users
+            await dbConn.db(database).collection("users").updateMany(
+                {}, //As chavetas significa todos os users
+                { $pull: { events: eventName } }
+            );
+            console.log(`Evento removido dos users`);
+        }
+
         return deleteResult;
     } catch (err) {
-        console.error("Error deleting event: ", err);
-        throw err; // Rethrowing the error is important for error handling in calling functions.
+        console.error("Erro ao apagar evento: ", err);
+        throw err; 
     } finally {
         await dbConn.close();
     }
