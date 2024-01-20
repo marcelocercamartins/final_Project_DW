@@ -105,6 +105,7 @@ async function saveContent() {
     const information = document.getElementById("information").value;
     let outputElement = document.getElementById("output");
     outputElement.innerHTML = information;
+    document.getElementById("information").value = " ";
     
     const userName = localStorage.getItem("activeUser");
 
