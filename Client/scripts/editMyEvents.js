@@ -94,6 +94,10 @@ function createEventsList(eventsList){
             moreInfo.addEventListener("click", function () {
                     eventDetails(value.name);
             })
+
+            deleteEvent.addEventListener("click", function(){
+                deleteMyEvent(value.name);
+            })
             
 
             //adição à div principal        
@@ -105,3 +109,28 @@ function createEventsList(eventsList){
             
     });
 }
+
+async function hideMyEventDetails() {
+     document.getElementById('overlay').style.display = 'none';
+     document.getElementById('popup').style.display = 'none';
+}
+
+
+async function deleteMyEvent(eventName) {
+    const eventObj = {name: eventName}
+    console.log(eventName)
+        const answer = await makeRequest("http://localhost:8003/deleteEvent", {
+                method: "DELETE",
+                body: JSON.stringify(eventObj),
+                headers: {
+                        token: localStorage.getItem("token"),
+                        "Content-type": "application/json; charset=UTF-8",
+                },
+        });
+    await answer.json();
+    myEvents()
+
+  
+  }
+
+
