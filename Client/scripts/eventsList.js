@@ -216,7 +216,7 @@ async function addToMyEvents() {
                                 break;
                         }
 
-                case 360:
+                case 404:
                         {
                                 const warning = document.getElementById("warning");
                                 warning.style.color = "red";
@@ -239,6 +239,11 @@ async function addToMyEvents() {
                                 }, 3000);
                                 break;   
                         }
+                case 500:{
+                        const warning = document.getElementById("warning");
+                        warning.style.color = "green";
+                        warning.textContent = warning.msg;
+                }
         }
 }
 
