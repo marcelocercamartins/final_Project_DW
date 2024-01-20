@@ -147,7 +147,8 @@ app.post("/eventDetails", async (req, res) => {
 app.delete("/deleteEvent", async (req, res) => {
     userAuthorization(req.header('token'));
     
-    const eventName = req.body.eventName; // Nome do evento deve vir no body, caso não venha é somente necessário introduzir variável de entrada
+    const eventName = req.body.name; 
+    console.log(eventName);// Nome do evento deve vir no body, caso não venha é somente necessário introduzir variável de entrada
 
     try {
         const result = await deleteEvent(eventName);
@@ -313,6 +314,7 @@ async function findEvent(event){
 
 //Função de delete
 async function deleteEvent(eventName) {
+    console.log(eventName);
     const dbConn = new MongoClient(uri);
 
     try {
