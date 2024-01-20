@@ -8,7 +8,7 @@
   margin-left: 10px;
 }
 
-#searchBox{
+#searchBox, #mySearchBox{
   margin-top: 20px;
   width: 15%;
   padding: 10px;
@@ -2931,6 +2931,8 @@ textarea.form-control-lg {
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: #ee0979;
   --bs-btn-disabled-border-color: #ee0979;
+  margin: 10px; 
+  
 }
 
 .btn-secondary {
@@ -10968,8 +10970,9 @@ header.masthead .bg-circle-4 {
 
 /*MyEvents*/
 
-.userDescription, .sidebar-title {
-  margin-top: 25px;
+.sidebar-title {
+  margin: 12px 10px 0 0;
+  padding: 0;
 }
 .media-body h5 {
   font-size: 15px;
@@ -10978,8 +10981,8 @@ header.masthead .bg-circle-4 {
 
 .sidebar-title {
   font-size: 1.1rem;
+  
 }
-
 
 .categories li a {
   color: #999;
@@ -10987,6 +10990,8 @@ header.masthead .bg-circle-4 {
   display: block;
   padding: 5px 10px;
   border-bottom: solid #eee;
+  text-decoration: none;
+  
 }
 
 .categories li a:before {
@@ -11005,7 +11010,7 @@ header.masthead .bg-circle-4 {
 .heading {
   font-size: 20px;
   color: black;
-  margin-bottom: 0;
+  margin: 50px 0 0 0;
 }
 
 .photos .photo-item {
@@ -11067,22 +11072,38 @@ header.masthead .bg-circle-4 {
     border-radius: 5px;
     background-color: #f2f2f2;
     padding: 20px;
-    width: 70%;
+    width: 50%;
     position: relative;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, 50%);
+    transform: translate(-50%, 0%);
     display: none;
     
   }
 
-  .another-container {
-    display:flex;
-  }
-
+  .another-container{
 
 
   
+  }
+
+  .myEventListContainer, #mySearchBox, #backButton{
+    display: none;
+  }
+  
+  #menuContainer {
+    display: flex;
+    justify-content:flex-end;
+    
+  }
+
+  #backButton{
+    width: 4%;
+    justify-content: flex-end;
+    text-decoration: none;
+  }
+ 
+
 
 @media (min-width: 992px) {
   header.masthead {

@@ -8,6 +8,7 @@
   <title>Event Eagle</title>
   <script src="scripts/userHandle.js"></script>
   <script src = "scripts/eventsList.js"></script>
+  <script src = "scripts/editMyEvents.js"></script>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -56,39 +57,34 @@
 
   <!--Content-->
 
+
+
+
 <div class="container">
+  <div id="menuContainer">
+    
+    <ul class="list-unstyled categories">
+      <li id="criarEvento"><a href="javascript:void(0)" id="criarEventoLink" style="font-size:20px" onclick="createPosts()">Criar evento</a></li>
+      <li id="verEventos"><a href="javascript:void(0)" id="verEvento" style="font-size:20px" onclick="managePosts()">Ver os meus eventos</a></li>
+
+      
+  </ul>
+</div>
   <div id="another-container">
     <div class="row">
         <div class="col-md-9 mb40">
-                <div class="post-content">
-                    <h3 class="userDescription">About Me</h3>
-                    <div class="media mb40">
-                        <i class="d-flex mr-3 fa fa-user-circle fa-5x text-primary"></i>
-                        <br><div id="output"></div>
-                        <input type="text" id="information" placeholder="Personalize your description">
-                        <button onclick="saveContent()">Save</button>
-                        <hr>
-                          
-                    </div>
-                </div> 
-        </div>
-        
-        <div class="col-md-3 mb40">
-            <div class="mb40">
-                <h4 class="sidebar-title">Menu</h4>
-                <ul class="list-unstyled categories">
-                    <li id="criarEvento"><a href="javascript:void(0)" id="criarEventoLink" onclick="createPosts()">Criar evento</a></li>
-                    <li id="verEventos"><a href="javascript:void(0)" id="verEvento" onclick="managePosts()">Ver os meus eventos</a>
-                        <!-- <ul class="list-unstyled">
-                            <li><a href="javascript:void(0)"></a></li>
-                            <li><a href="javascript:void(0)"></a></li>
-                        </ul> -->
-                    </li>
-                </ul>
+          <div class="post-content">
+            <h3 class="userDescription">Sobre mim</h3>
+            <div class="media mb40">
+              <br><div id="output"></div>
+              <input type="text" id="information" placeholder="Personalize your description">
+              <button class="btn btn-primary" onclick="saveContent()">Save</button>
+              <hr>
             </div>
+          </div> 
         </div>
     </div>
-  </iv>
+  
 
 
 
@@ -109,47 +105,74 @@
       </div>
     </div>
   </section>
+  </div>
 </div>
 
   <div id="eventoSquare">
     
-      <label for="imageInput">Image:</label>
-      <input type="url" id="imageInput" name="imageInput">
-      
-      <label for="titleInput">Title:</label>
-      <input type="text" id="titleInput" name="titleInput" placeholder="Title">
-    
-      <label for="dateInput">Date:</label>
-      <input type="date" id="dateInput" name="dateInput" placeholder="ddmmaaaa">
-
-      <label for="locationInput">Location:</label>
-      <input type="text" id="locationInput" name="locationInput" placeholder="Meo Arena">
-      
-      <label for="gpsInput">Gps:</label>
-      <input type="text" id="gpsInput" name="gpsInput"></input>
+      <label for="imageInput">Imagem: </label>
+      <input type="url" id="imageInput" name="imageInput" placeholder="URL format" style="font-size:13px">
+      <br>
+      <label for="titleInput">Título do evento:</label>
+      <input type="text" id="titleInput" name="titleInput" placeholder="Title" style="font-size:13px">
+      <br>
+      <label for="dateInput">Data:</label><br>
+      <input type="date" id="dateInput" name="dateInput" style="font-size:13px">
+      <br>
+      <label for="durationInput">Duração:</label><br>
+      <input type="text" id="durationInput" name="durationInput" placeholder="00h00m" style="font-size:13px">
+      <br>
+      <label for="locationInput">Localização:</label>
+      <input type="text" id="locationInput" name="locationInput" placeholder="Nos Arena" style="font-size:13px">
+      <br>
+      <label for="gpsInput">Coordenadas:</label>
+      <input type="text" id="gpsInput" name="gpsInput" placeholder="38.7673, -9.09381" style="font-size:13px"></input>
       <br>
 
-      <label for="descriptionInput">Description:</label>
-      <textarea id="descriptionInput" name="descriptionInput" placeholder="Event Description"></textarea>
+      <label for="descriptionInput">Descrição:</label>
+      <textarea id="descriptionInput" name="descriptionInput" placeholder="Descrição do evento" style="font-size:13px"></textarea>
       <br>
       
-      <button type="submit" onclick="addEvent()">Submit</button>
+      <button class="btn btn-primary" type="submit" onclick="addEvent()">Criar</button>
+      <a class="btn btn-primary" href="myEvents.html">Voltar</a>
     
   </div>
 </div>
 
+<!-- div para pesquisa de eventos -->
+  <input id="mySearchBox" type="text" name="searchBox" placeholder="Pesquisa" oninput="eventSearcher()">
 
-  <!-- Footer-->
+
+<!-- div com os eventos -->
+<div class = "myEventListContainer" id = "myEventListContainer"></div>
+<a id="backButton" class="btn-primary" href="myEvents.html">Voltar</a>
+
+<!-- popup com os detalhes do evento -->
+<div class="overlay" id="overlay" onclick="hideEventDetails()"></div>
+  <div class="popup" id="popup">
+    <span class="close-btn" onclick="hideEventDetails()">X</span>
+    <div class="event-details" id="eventImagePopupDiv">
+      <img id="eventImagePopup" src="" alt="" width="150px" height="150px">
+    </div> 
+    <div class="event-details" id="eventTitlePopupDiv"></div>
+    <div class="event-details" id="eventDatePopupDiv"></div>
+    <div class="event-details" id="eventHourPopupDiv"></div>
+    <div class="event-details" id="eventDescriptionPopupDiv"></div>
+    <div class="event-map" id="eventMapAPIDiv"></div>
+</div>
+
+<!-- Footer-->
 <footer class="py-5 bg-black">
   <div class="container px-5">
     <p class="m-0 text-center text-white small">Copyright &copy; Your Website 2024</p>
   </div>
-</footer>
+
 
   <script>
     window.onload = function () {
       renderPageAfterLoadHtmlElements();
       myPosts();
+      myEvents();
       let textInputValue = localStorage.getItem("information");
       let outputElement = document.getElementById("output");
       outputElement.innerHTML = textInputValue;

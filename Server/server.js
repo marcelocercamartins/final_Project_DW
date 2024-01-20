@@ -28,129 +28,107 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Criar novo utilizador
 app.post("/signUp", async (req, res) => {
-    try{
-        const email = req.body.email;
-        const username = req.body.username;
-        const password = req.body.password;
-    
-        const findUserName = await findOneResult("users", { username: username });
-    
-        if (findUserName == null) {
-            if (password.length < 5) {
-                return res.status(400).send({ msg: 'Password deve ter 5 ou mais caracteres' });
-            }
-    
-            // Hash password with bcrypt
-            const saltRounds = 10;
-            try {
-                const hashedPassword = await bcrypt.hash(password, saltRounds);
-                const newUser = { username: username, email: email, password: hashedPassword, events: [] };
-               
-                await insertLinesOnDatabase("users", newUser);
-    
-                sendEmail(email);
-                return res.status(201).send({ msg:""});
-            } catch (error) {
-                console.error("Erro ao criar o utilizador: " + error);
-                return res.status(500).send({ msg:'Erro ao criar utilizador'});
-            }
-        } else {
-            console.log("Utilizador já existe");
-            return res.status(409).send({ msg: 'Utilizador já existe' });
+    const email = req.body.email;
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const findUserName = await findOneResult("users", { username: username });
+
+    if (findUserName == null) {
+        if (password.length < 5) {
+            return res.status(400).send({ msg: 'Password deve ter 5 ou mais caracteres' });
         }
-    }catch(error){
-        return res.status(500).json({ msg: "Erro interno do servidor" });
+
+        // Hash password with bcrypt
+        const saltRounds = 10;
+        try {
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+            const newUser = { username: username, email: email, password: hashedPassword, events: [] };
+           
+            await insertLinesOnDatabase("users", newUser);
+
+            sendEmail(email);
+            return res.status(201).send({ msg:""});
+        } catch (error) {
+            console.error("Erro ao criar o utilizador: " + error);
+            return res.status(500).send({ msg:'Erro ao criar utilizador'});
+        }
+    } else {
+        console.log("Utilizador já existe");
+        return res.status(409).send({ msg: 'Utilizador já existe' });
     }
-   
 });
 
 
 // Login
 app.post("/login", async (req, res) => {
-    try{
-        const name = req.body.username;
-        const password = req.body.password;
-    
-        const findUser = await findOneResult("users", { username: name });
-    
-        if (findUser != null) 
-        {     
-            bcrypt.compare(password, findUser.password, (error, isMatch) => {
-                if (error) {             
-                    console.error("Erro ao comparar a password: ", error);
-                    return res.status(500).json({ msg: "Erro de Servidor" });
-                }
-    
-                if (isMatch) {           
-                    const user = { username: name, password: findUser.password };
-                    const token = jwt.sign(user, secret);
-                    return res.status(200).json({ auth: true, token: token, msg: "" });
-                } else { 
-                    return res.status(401).json({ msg: "Password inválida!" });
-                }
-            });
-        } else {
-            console.log("Utilizador não encontrado!");
-            return res.status(404).json({ msg: "Utilizador não encontrado!" });
-        }
-    }catch(error){
-        return res.status(500).json({ msg: "Erro interno do servidor" });
+    const name = req.body.username;
+    const password = req.body.password;
+
+    const findUser = await findOneResult("users", { username: name });
+
+    if (findUser != null) 
+    {     
+        bcrypt.compare(password, findUser.password, (error, isMatch) => {
+            if (error) {             
+                console.error("Erro ao comparar a password: ", error);
+                return res.status(500).json({ msg: "Erro de Servidor" });
+            }
+
+            if (isMatch) {           
+                const user = { username: name, password: findUser.password };
+                const token = jwt.sign(user, secret);
+                return res.status(200).json({ auth: true, token: token, msg: "" });
+            } else { 
+                return res.status(401).json({ msg: "Password inválida!" });
+            }
+        });
+    } else {
+        console.log("Utilizador não encontrado!");
+        return res.status(404).json({ msg: "Utilizador não encontrado!" });
     }
-    
 });
 
 
 app.post("/addEventToUser", async (req, res) => {
-    try{
-        //verificar se existe um utilizador logado
-        userAuthorization(req.header('token'));
+    //verificar se existe um utilizador logado
+    userAuthorization(req.header('token'));
 
-        //Adição do evento ao utilizador
-        const userName = decode.username;
-        const eventName = req.body.event;
+    //Adição do evento ao utilizador
+    const userName = decode.username;
+    const eventName = req.body.event;
 
-        //Para atualizar apenas o array de eventos tenho de tirar o array atual adicionar o evento novo e dps atualizar o campo
-        // preciso do id do objeto tb acho
-        const userInfo = await findOneResult("users", { username: userName });
-        const userID = userInfo._id;
-        const userEventsList = userInfo.events;
+    //Para atualizar apenas o array de eventos tenho de tirar o array atual adicionar o evento novo e dps atualizar o campo
+    // preciso do id do objeto tb acho
+    const userInfo = await findOneResult("users", { username: userName });
+    const userID = userInfo._id;
+    const userEventsList = userInfo.events;
 
-        const verifyIfAlreadyAdded = verifyIfEventAlreadyOnList(userInfo, eventName);
-        
+    const verifyIfAlreadyAdded = verifyIfEventAlreadyOnList(userInfo, eventName);
+    
 
-        if (verifyIfAlreadyAdded == 0) {
-            const updatedList = userEventsList.concat(eventName);
-            updateObjectField("users", userID, updatedList);
-            return res.status(201).json({ msg: "" });
-            } else {
-            return res.status(404).json({ msg: "" });
-        }
-    }catch(error){
-        return res.status(500).json({ msg: "Erro interno do servidor" });
+    if (verifyIfAlreadyAdded == 0) {
+        const updatedList = userEventsList.concat(eventName);
+        updateObjectField("users", userID, updatedList);
+        return res.status(201).json({ msg: "" });
+        } else {
+        return res.status(360).json({ msg: "" });
     }
-  
+
 })
 
 
-// registeredEvents não existe necessidade de verificar token os eventos registados qualquer um pode ver
+// registeredEvents   não existe necessidade de verificar token os eventos registados qualquer um pode ver
 app.get("/registeredEvents", async (req, res) => {
-    try{
-        const eventsList = await findAll("events", {});
-        return res.json({ resultSet: eventsList });
-    }catch(error){
-        res.status(500).json({ msg: "Erro interno do servidor" });
-    }
+    const eventsList = await findAll("events", {});
+    return res.json({ resultSet: eventsList });
 });
 
 // endpoint utilizado para fazer uma pesquisa de eventos especifica
 app.post("/searchForEvents", async (req, res) => {
-    try{
-        const event = req.body;
-        const eventsList = await findEvent(event);
-        return res.json({ resultSet: eventsList });
-    }catch(error){
-        res.status(500).json({ msg: "Erro interno do servidor" });
-    }
+    const event = req.body;
+    const eventsList = await findEvent(event);
+    return res.json({ resultSet: eventsList });
 });
 
 
@@ -159,23 +137,19 @@ app.post("/searchForEvents", async (req, res) => {
 
 //endpoint para utilizado para obter os detalhes de determinado evento
 app.post("/eventDetails", async (req, res) => {
-    try{
-        const eventName = req.body.event;
+    const eventName = req.body.event;
 
-        const eventInfo = await findOneResult("events", {});
-        return res.json({ resultSet: eventInfo });
-    }catch(error){
-        res.status(500).json({ msg: "Erro interno do servidor" });
-    }
+    const eventInfo = await findOneResult("events", {});
+    return res.json({ resultSet: eventInfo });
 });
 
 //endpoint utilizado para remoção de eventos
-app.delete("/deleteEvent", async (req, res) => {  
-    try {
-        userAuthorization(req.header('token'));
+app.delete("/deleteEvent", async (req, res) => {
+    userAuthorization(req.header('token'));
     
-        const eventName = req.body.eventName; // Nome do evento deve vir no body, caso não venha é somente necessário introduzir variável de entrada
+    const eventName = req.body.eventName; // Nome do evento deve vir no body, caso não venha é somente necessário introduzir variável de entrada
 
+    try {
         const result = await deleteEvent(eventName);
         if (result.deletedCount === 0) {
             res.status(404).json({ msg: "Evento não foi encontrado ou já foi anteriormente apagado" });
@@ -183,7 +157,7 @@ app.delete("/deleteEvent", async (req, res) => {
             res.status(200).json({ msg: "Evento apagado com sucesso" });
         }
     } catch (err) {
-        res.status(500).json({ msg: "Erro interno do servidor" });
+        res.status(500).json({ msg: "Falha ao remover o evento" });
     }
 });
 
@@ -209,7 +183,6 @@ app.post("/addEvent", async (req, res) => {
     }
 });
 
-
 app.post("/userInfoUpdate", async (req,res) => {
     userAuthorization(req.header('token'));
     const information = req.body.information;
@@ -223,7 +196,6 @@ app.post("/userInfoUpdate", async (req,res) => {
     res.status(200).json({ msg: "Informação adicionada com sucesso" });
 });
     
-
 //endpoint utilizado para receber os eventos de um utilizador
 app.post("/myEvents", async (req, res) => {
     userAuthorization(req.header('token'));
@@ -234,7 +206,6 @@ app.post("/myEvents", async (req, res) => {
     console.log(eventsList);
     return res.json({ resultSet: eventsList });
 });
-
 
 function verifyIfEventAlreadyOnList(userInfo, event) {
     const userEvents = userInfo.events;
@@ -377,7 +348,6 @@ function userAuthorization(token){
         return res.status(401).json({ msg: "Utilizador não autenticado ou não autorizado!" });
     }
 }
-
 function verifyToken(token) {
     try {
         return jwt.verify(token, secret);
