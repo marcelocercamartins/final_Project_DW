@@ -25,17 +25,6 @@ async function eventSearcher(){
         createEventsList(eventsListSearch);
 }
 
-async function myEvents(){
-        const answerMyEvents = await makeRequest("http://localhost:8003/myEvents", {
-                method: "POST",
-                headers: {
-                        token: localStorage.getItem("token"),
-                        "Content-type": "application/json; charset=UTF-8",
-                },
-        });
-        const myEventsList = await answerMyEvents.json();
-        createEventsList(myEventsList);
-}
 
 function createEventsList(eventsList){
         const refreshPage = document.getElementById("eventListContainer");
@@ -216,7 +205,7 @@ async function addToMyEvents() {
                                 break;
                         }
 
-                case 404:
+                case 360:
                         {
                                 const warning = document.getElementById("warning");
                                 warning.style.color = "red";
@@ -239,28 +228,32 @@ async function addToMyEvents() {
                                 }, 3000);
                                 break;   
                         }
-                case 500:{
-                        const warning = document.getElementById("warning");
-                        warning.style.color = "green";
-                        warning.textContent = warning.msg;
-                }
         }
 }
 
 function createPosts(){
         let eventoSquare = document.getElementById('eventoSquare');
         let anotherContainer = document.getElementById('another-container');
-        
+        let myEventListContainer = document.getElementById('myEventListContainer');
+        let searchContainerMyEvents = document.getElementById('mySearchBox');
+        myEventListContainer.style.display = 'none';
         eventoSquare.style.display = 'block';
         anotherContainer.style.display = 'none';
+        searchContainerMyEvents.style.display = 'none';
         // Change 'none' to 'block' to make the square appear
 }
 
 function managePosts(){
         let eventoSquare = document.getElementById('eventoSquare');
         let anotherContainer = document.getElementById('another-container');
+        let myEventListContainer = document.getElementById('myEventListContainer');
+        let searchContainerMyEvents = document.getElementById('mySearchBox');
+        let backButton = document.getElementById('backButton');
         eventoSquare.style.display = 'none';
         anotherContainer.style.display = 'none';
+        myEventListContainer.style.display = 'block';
+        searchContainerMyEvents.style.display = 'block';
+        backButton.style.display = 'flex';
 }
 
 async function addEvent() {
