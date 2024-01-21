@@ -111,22 +111,22 @@
   <div id="eventoSquare">
     
       <label for="imageInput">Imagem: </label>
-      <input type="url" id="imageInput" name="imageInput" placeholder="URL format" style="font-size:13px">
+      <input type="url" id="imageInput" name="imageInput" placeholder="URL format" style="font-size:13px" required>
       <br>
       <label for="titleInput">Título do evento:</label>
-      <input type="text" id="titleInput" name="titleInput" placeholder="Title" style="font-size:13px">
+      <input type="text" id="titleInput" name="titleInput" placeholder="Title" style="font-size:13px" required>
       <br>
       <label for="dateInput">Data:</label><br>
-      <input type="date" id="dateInput" name="dateInput" style="font-size:13px">
+      <input type="date" id="dateInput" name="dateInput" style="font-size:13px" required>
       <br>
       <label for="durationInput">Duração:</label><br>
-      <input type="text" id="durationInput" name="durationInput" placeholder="00h00m" style="font-size:13px">
+      <input type="text" id="durationInput" name="durationInput" placeholder="00h00m" style="font-size:13px" required>
       <br>
       <label for="locationInput">Localização:</label>
-      <input type="text" id="locationInput" name="locationInput" placeholder="Nos Arena" style="font-size:13px">
+      <input type="text" id="locationInput" name="locationInput" placeholder="Nos Arena" style="font-size:13px" required>
       <br>
       <label for="gpsInput">Coordenadas:</label>
-      <input type="text" id="gpsInput" name="gpsInput" placeholder="38.7673, -9.09381" style="font-size:13px"></input>
+      <input type="text" id="gpsInput" name="gpsInput" placeholder="38.7673, -9.09381" style="font-size:13px" required></input>
       <br>
 
       <label for="descriptionInput">Descrição:</label>
@@ -148,9 +148,9 @@
 <a id="backButton" class="btn-primary" href="myEvents.html">Voltar</a>
 
 <!-- popup com os detalhes do evento -->
-<div class="overlay" id="overlay" onclick="hideEventDetails()"></div>
+<div class="overlay" id="overlay" onclick="hideMyEventDetails()"></div>
   <div class="popup" id="popup">
-    <span class="close-btn" onclick="hideEventDetails()">X</span>
+    <span class="close-btn" onclick="hideMyEventDetails()">X</span>
     <div class="event-details" id="eventImagePopupDiv">
       <img id="eventImagePopup" src="" alt="" width="150px" height="150px">
     </div> 

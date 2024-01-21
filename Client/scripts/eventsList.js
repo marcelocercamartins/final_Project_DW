@@ -114,7 +114,7 @@ function createEventsList(eventsList){
 }
 
 async function eventDetails(eventName) {
-        const eventObj = { event: eventName, }
+        const eventObj = {name: eventName}
 
         const answer = await makeRequest("http://localhost:8003/eventDetails", {
                 method: "POST",
