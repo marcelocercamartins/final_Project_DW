@@ -137,9 +137,10 @@ app.post("/searchForEvents", async (req, res) => {
 
 //endpoint para utilizado para obter os detalhes de determinado evento
 app.post("/eventDetails", async (req, res) => {
-    const eventName = req.body.event;
+    const eventName = req.body.name;
+    const filter = { name: eventName};
 
-    const eventInfo = await findOneResult("events", {});
+    const eventInfo = await findOneResult("events", filter);
     return res.json({ resultSet: eventInfo });
 });
 
@@ -148,7 +149,7 @@ app.delete("/deleteEvent", async (req, res) => {
     userAuthorization(req.header('token'));
     
     const eventName = req.body.name; 
-    console.log(eventName);// Nome do evento deve vir no body, caso não venha é somente necessário introduzir variável de entrada
+    // Nome do evento deve vir no body, caso não venha é somente necessário introduzir variável de entrada
 
     try {
         const result = await deleteEvent(eventName);
