@@ -92,8 +92,12 @@ app.post("/login", async (req, res) => {
 
 app.post("/addEventToUser", async (req, res) => {
     //verificar se existe um utilizador logado
-    userAuthorization(req.header('token'));
+    const userLoged = userAuthorization(req.header('token'));
 
+    if (!userLoged){
+        return res.status(401).json({});
+    } 
+     
     //Adição do evento ao utilizador
     const userName = decode.username;
     const eventName = req.body.event;
@@ -126,14 +130,18 @@ app.get("/registeredEvents", async (req, res) => {
 
 // endpoint utilizado para fazer uma pesquisa de eventos especifica
 app.post("/searchForEvents", async (req, res) => {
-    const event = req.body;
-    const eventsList = await findEvent(event);
+    const searchRaw = req.body;
+    const eventsList = [];
+ 
+    const search = searchRaw.searchEvent;
+    
+    eventsList.push(await findAll("events", {name: new RegExp(search, 'i')}))
+    eventsList.push(await findAll("events", {date: new RegExp(search, 'i')}))
+    eventsList.push(await findAll("events", {time: new RegExp(search, 'i')}))
+    eventsList.push(await findAll("events", {location: new RegExp(search, 'i')}))
+
     return res.json({ resultSet: eventsList });
 });
-
-
-
-
 
 //endpoint para utilizado para obter os detalhes de determinado evento
 app.post("/eventDetails", async (req, res) => {
@@ -146,7 +154,12 @@ app.post("/eventDetails", async (req, res) => {
 
 //endpoint utilizado para remoção de eventos
 app.delete("/deleteEvent", async (req, res) => {
-    userAuthorization(req.header('token'));
+    const userLoged = userAuthorization(req.header('token'));
+
+    if (!userLoged){
+        return res.status(401).json({});
+    } 
+     
     
     const eventName = req.body.name; 
     // Nome do evento deve vir no body, caso não venha é somente necessário introduzir variável de entrada
@@ -165,10 +178,16 @@ app.delete("/deleteEvent", async (req, res) => {
 
 //endpoint para criar evento
 app.post("/addEvent", async (req, res) => {
-    userAuthorization(req.header('token'));
+    const userLoged = userAuthorization(req.header('token'));
+
+    if (!userLoged){
+        return res.status(401).json({});
+    } 
+       
     console.log("Received Data:", req.body);
     const title = req.body.name;
     const date = req.body.date;
+    const time = req.body.time;
     const location = req.body.location;
     const gps = req.body.gps;
     const description = req.body.description;
@@ -176,7 +195,7 @@ app.post("/addEvent", async (req, res) => {
     const username = req.body.username;
 
     try {
-        const insertValue = {name: title, date: date, location: location, gps: gps, description: description, imageURL: image, username: username};
+        const insertValue = {name: title, date: date, time:time, location: location, gps: gps, description: description, imageURL: image, username: username};
         console.log("Insert Value:", insertValue);
         await insertLinesOnDatabase("events", insertValue);
         res.status(200).json({ msg: "Evento adicionado com sucesso" });
@@ -186,7 +205,12 @@ app.post("/addEvent", async (req, res) => {
 });
 
 app.post("/userInfoUpdate", async (req,res) => {
-    userAuthorization(req.header('token'));
+    const userLoged = userAuthorization(req.header('token'));
+
+    if (!userLoged){
+        return res.status(401).json({});
+    } 
+
     const information = req.body.information;
     const username = req.body.username;
     const filter = { username: username};
@@ -200,7 +224,12 @@ app.post("/userInfoUpdate", async (req,res) => {
     
 //endpoint utilizado para receber os eventos de um utilizador
 app.post("/myEvents", async (req, res) => {
-    userAuthorization(req.header('token'));
+    const userLoged = userAuthorization(req.header('token'));
+
+    if (!userLoged){
+        return res.status(401).json({});
+    } 
+
     const username = req.body.username;
     const filter = { username: username};
     
@@ -219,6 +248,15 @@ function verifyIfEventAlreadyOnList(userInfo, event) {
     }
     return 0;
 }
+
+app.get("/verifyIfUserIsLoggendIn", async(req, res) => {
+    const userLoged = userAuthorization(req.header('token'));
+
+    if (!userLoged){
+        return res.status(401).json({});
+    } 
+    return res.status(200).json({});
+})
 
 /////////////////funções Base de dados////////////////////////
 
@@ -299,20 +337,6 @@ async function findAll(table, filter) {
     }
 }
 
-async function findEvent(event){
-    const dbConn = new MongoClient(uri);
-
-    try {
-        const findResult = await dbConn.db(database).collection("events").find({name: new RegExp('^' + event.searchEvent) }).toArray();
-        await dbConn.close();
-        return findResult;
-    } catch (err) {
-        console.log(err);
-    } finally {
-        await dbConn.close();
-    }
-}
-
 //Função de delete
 async function deleteEvent(eventName) {
     console.log(eventName);
@@ -348,9 +372,11 @@ async function deleteEvent(eventName) {
 function userAuthorization(token){
     const decoded = verifyToken(token);
     if (!decoded) {
-        return res.status(401).json({ msg: "Utilizador não autenticado ou não autorizado!" });
+        return false    
     }
+    return true;
 }
+
 function verifyToken(token) {
     try {
         return jwt.verify(token, secret);

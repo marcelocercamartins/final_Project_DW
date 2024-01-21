@@ -13,17 +13,37 @@ async function displayEvents() {
 
 async function eventSearcher(){
         const searchEvent = document.getElementById("searchBox").value;
-        const answerSearch = await makeRequest("http://localhost:8003/searchForEvents", {
-                method: "POST",
-                body: JSON.stringify({searchEvent}),
-                headers: {
-                        token: localStorage.getItem("token"),
-                        "Content-type": "application/json; charset=UTF-8",
-                },
-        });
-        const eventsListSearch = await answerSearch.json();
-        createEventsList(eventsListSearch);
+          
+        if (searchEvent.length > 1){
+                const answerSearch = await makeRequest("http://localhost:8003/searchForEvents", {
+                        method: "POST",
+                        body: JSON.stringify({searchEvent}),
+                        headers: {
+                                token: localStorage.getItem("token"),
+                                "Content-type": "application/json; charset=UTF-8",
+                        },
+                });
+                const eventsListSearch = await answerSearch.json();
+                console.log(eventsListSearch);
+                const eventsList = prepareList(eventsListSearch.resultSet);        
+                createEventsList(eventsList);
+        } else {
+                displayEvents();
+        }
 }
+
+function prepareList(eventsListSearch) {
+        const preparedList = { resultSet: [] };
+    
+        for (let i = 0; i < eventsListSearch.length; i++) {
+            if (Array.isArray(eventsListSearch[i]) && eventsListSearch[i].length > 0) {
+                preparedList.resultSet.push(...eventsListSearch[i]);
+            }
+        }
+    
+        console.log(preparedList);
+        return preparedList;
+    }
 
 
 function createEventsList(eventsList){
@@ -32,9 +52,6 @@ function createEventsList(eventsList){
         //resultSet é o objeto que vem da base de dados com as informações do evento
         Object.entries(eventsList.resultSet).forEach(([key, value]) => {
                 const container = document.querySelector(".eventListContainer");
-                const eventDate = value.date.split("   ");
-                let eventDay = "" + eventDate[0];
-                const eventHour = "" + eventDate[1];
 
                 //main div contem toda a informação do evento
                 const mainDiv = document.createElement("div");
@@ -82,14 +99,14 @@ function createEventsList(eventsList){
                 rightDiv.style.display = "flex";
                 rightDiv.style.alignItems = "center";
                 rightDiv.style.overflow = "hidden";  
-                rightDiv.innerHTML = value.name + "<br>" + eventDay + "<br>" + eventHour + "<br>" + value.location
+                rightDiv.innerHTML = value.name + "<br>" + value.date + "<br>" + value.time + "<br>" + value.location
                 
                 //ajusta os elementos em página web
                 window.addEventListener('resize', function () {
                         if (window.innerWidth < 700) { 
-                            rightDiv.innerHTML = value.name + "<br>" + eventDay + "<br>" + eventHour;
+                            rightDiv.innerHTML = value.name + "<br>" + value.date + "<br>" + value.time;
                         } else {
-                            rightDiv.innerHTML = value.name + "<br>" + eventDay + "<br>" + eventHour + "<br>" + value.location;
+                            rightDiv.innerHTML = value.name + "<br>" + value.date + "<br>" + value.time + "<br>" + value.location;
                         }
                 });
 
@@ -126,25 +143,48 @@ async function eventDetails(eventName) {
         });
 
         const eventInfo = await answer.json();
-        const eventDate = eventInfo.resultSet.date.split("   ");
-        const eventDay = "" + eventDate[0];
-        const eventHour = "" + eventDate[1];
         const eventCoordinates = eventInfo.resultSet.gps.split(", ");
         const eventLatitude = eventCoordinates[0];
         const eventLongitude = eventCoordinates[1];
 
         //alteração do conteudo do popup conforme o evento. resultSet é o objeto que vem da base de dados com as informações do evento
         document.getElementById('eventTitlePopupDiv').innerText = eventInfo.resultSet.name;
-        document.getElementById('eventDatePopupDiv').innerText = eventDay;
-        document.getElementById('eventHourPopupDiv').innerText = eventHour;
+        document.getElementById('eventDatePopupDiv').innerText = eventInfo.resultSet.date;
+        document.getElementById('eventHourPopupDiv').innerText = eventInfo.resultSet.time;
         document.getElementById('eventDescriptionPopupDiv').innerText = eventInfo.resultSet.description;
         document.getElementById("eventImagePopup").src = eventInfo.resultSet.imageURL;
-        callMapsAPI(eventLatitude, eventLongitude)
+        callMapsAPI(eventLatitude, eventLongitude);
+        const userLogged = await verifyIfThereIsAUserLoggedIn();
+        console.log(userLogged);
+        if (userLogged == 1){
+                document.getElementById("addToMyEventsButton").style.display = "block";
+        } else {
+                document.getElementById("addToMyEventsButton").style.display = "none";
+        }
+
         document.getElementById('overlay').style.display = 'block';
         document.getElementById('popup').style.display = 'block';
+        
+
 }
 
-async function hideEventDetails() {
+async function verifyIfThereIsAUserLoggedIn(){
+        const answer = await makeRequest("http://localhost:8003/verifyIfUserIsLoggendIn", {
+                method: "GET",
+                headers: {
+                        token: localStorage.getItem("token"),
+                        "Content-type": "application/json; charset=UTF-8",
+                },                
+        });
+
+        if (answer.status == 401){
+                return 0;
+        } else {
+                return 1;
+        }
+}
+
+function hideEventDetails() {
        //reset ao mapa
         var container = L.DomUtil.get('eventMapAPIDiv');
         if(container != null){
@@ -155,7 +195,7 @@ async function hideEventDetails() {
         document.getElementById('popup').style.display = 'none';
 }
 
-async function callMapsAPI(eventLatitude, eventLongitude) {
+function callMapsAPI(eventLatitude, eventLongitude) {
         var mymap = L.map('eventMapAPIDiv').setView([eventLatitude, eventLongitude], 15);
         
         //força o carregamento das tiles
@@ -260,14 +300,14 @@ async function addEvent() {
         window.location.href = "myEvents.html";
         const title = document.getElementById("titleInput").value;
         const date = document.getElementById("dateInput").value;
+        const time = document.getElementById("hourInput").value;
         const location = document.getElementById("locationInput").value;
         const gps = document.getElementById("gpsInput").value;
         const description = document.getElementById("descriptionInput").value;
         const image = document.getElementById("imageInput").value;
         const username = localStorage.getItem("activeUser");
     
-        const postObj = {name: title, date: date, location: location, gps: gps, description: description, imageURL: image, username: username};
-        console.log(postObj)
+        const postObj = {name: title, date: date, time:time, location: location, gps: gps, description: description, imageURL: image, username: username};
         const answer = await makeRequest("http://localhost:8003/addEvent", {
             method: "POST",
             body: JSON.stringify(postObj),
