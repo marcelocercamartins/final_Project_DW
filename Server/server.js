@@ -137,9 +137,10 @@ app.post("/searchForEvents", async (req, res) => {
 
 //endpoint para utilizado para obter os detalhes de determinado evento
 app.post("/eventDetails", async (req, res) => {
-    const eventName = req.body.event;
+    const eventName = req.body.name;
+    const filter = { name: eventName};
 
-    const eventInfo = await findOneResult("events", {});
+    const eventInfo = await findOneResult("events", filter);
     return res.json({ resultSet: eventInfo });
 });
 
@@ -147,7 +148,8 @@ app.post("/eventDetails", async (req, res) => {
 app.delete("/deleteEvent", async (req, res) => {
     userAuthorization(req.header('token'));
     
-    const eventName = req.body.eventName; // Nome do evento deve vir no body, caso não venha é somente necessário introduzir variável de entrada
+    const eventName = req.body.name; 
+    // Nome do evento deve vir no body, caso não venha é somente necessário introduzir variável de entrada
 
     try {
         const result = await deleteEvent(eventName);
@@ -313,6 +315,7 @@ async function findEvent(event){
 
 //Função de delete
 async function deleteEvent(eventName) {
+    console.log(eventName);
     const dbConn = new MongoClient(uri);
 
     try {
