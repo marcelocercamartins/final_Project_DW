@@ -10,19 +10,41 @@ async function myEvents(){
             },
     });
     const myEventsList = await answerMyEvents.json();
-    createEventsList(myEventsList);
+    createMyEventsList(myEventsList);
 }
 
+async function myEventSearcher(){
+    const searchEvent = document.getElementById("mySearchBox").value;
+      
+    if (searchEvent.length > 1){
+            const answerSearch = await makeRequest("http://localhost:8003/searchForEvents", {
+                    method: "POST",
+                    body: JSON.stringify({searchEvent}),
+                    headers: {
+                            token: localStorage.getItem("token"),
+                            "Content-type": "application/json; charset=UTF-8",
+                    },
+            });
+            const eventsListSearch = await answerSearch.json();
+            console.log(eventsListSearch);
+            const eventsList = prepareList(eventsListSearch.resultSet);        
+            createMyEventsList(eventsList);
+    } else {
+            displayEvents();
+    }
+}
 
-function createEventsList(eventsList){
+function createMyEventsList(eventsList){
     const refreshPage = document.getElementById("myEventListContainer");
+    let noEventsShow = document.getElementById('noEventstoShow');
     refreshPage.innerHTML = "";
     //resultSet é o objeto que vem da base de dados com as informações do evento
+    if (Object.entries(eventsList.resultSet).length === 0){
+        noEventsShow.innerText = "Sem eventos";
+    }
+
     Object.entries(eventsList.resultSet).forEach(([key, value]) => {
             const container = document.querySelector(".myEventListContainer");
-            const eventDate = value.date.split("   ");
-            let eventDay = "" + eventDate[0];
-            const eventHour = "" + eventDate[1];
 
             //main div contem toda a informação do evento
             const mainDiv = document.createElement("div");
@@ -70,18 +92,18 @@ function createEventsList(eventsList){
             rightDiv.style.display = "flex";
             rightDiv.style.alignItems = "center";
             rightDiv.style.overflow = "hidden";  
-            rightDiv.innerHTML = value.name + "<br>" + eventDay + "<br>" + eventHour + "<br>" + value.location
+            rightDiv.innerHTML = value.name + "<br>" + value.date  + "<br>" + value.time + "<br>" + value.location
             
             //ajusta os elementos em página web
             window.addEventListener('resize', function () {
                     if (window.innerWidth < 700) { 
-                        rightDiv.innerHTML = value.name + "<br>" + eventDay + "<br>" + eventHour;
+                        rightDiv.innerHTML = value.name + "<br>" + value.date + "<br>" + value.time;
                     } else {
-                        rightDiv.innerHTML = value.name + "<br>" + eventDay + "<br>" + eventHour + "<br>" + value.location;
+                        rightDiv.innerHTML = value.name + "<br>" + value.date  + "<br>" + value.time + "<br>" + value.location;
                     }
             });
 
-
+            
             
             //adição à div principal
             mainDiv.appendChild(rightDiv);
@@ -89,10 +111,10 @@ function createEventsList(eventsList){
             //Botão para levar á página de mais informações
             const moreInfo = document.createElement("div");
             const deleteEvent = document.createElement("div");
-            moreInfo.innerHTML ='<button class="btn btn-primary">Detalhes</button>'
+            moreInfo.innerHTML ='<button class="btn btn-primary">Editar</button>'
             deleteEvent.innerHTML ='<button class="btn btn-primary">Apagar</button>'
             moreInfo.addEventListener("click", function () {
-                    eventDetails(value.name);
+                    myEventDetails(value.name);
             })
 
             deleteEvent.addEventListener("click", function(){
@@ -110,9 +132,36 @@ function createEventsList(eventsList){
     });
 }
 
-async function hideMyEventDetails() {
-     document.getElementById('overlay').style.display = 'none';
-     document.getElementById('popup').style.display = 'none';
+async function myEventDetails(eventName) {
+    const eventObj = {name: eventName}
+
+    const answer = await makeRequest("http://localhost:8003/eventDetails", {
+            method: "POST",
+            body: JSON.stringify(eventObj),
+            headers: {
+                    token: localStorage.getItem("token"),
+                    "Content-type": "application/json; charset=UTF-8",
+            },
+    });
+
+    const eventInfo = await answer.json();
+    const eventCoordinates = eventInfo.resultSet.gps.split(", ");
+    const eventLatitude = eventCoordinates[0];
+    const eventLongitude = eventCoordinates[1];
+
+    //alteração do conteudo do popup conforme o evento. resultSet é o objeto que vem da base de dados com as informações do evento
+    Object.entries(eventInfo).forEach(([key, value]) => {
+        // rightDiv.innerHTML = value.name + "<br>" + value.date  + "<br>" + value.time + "<br>" + value.location;
+    localStorage.setItem("eventId", value._id);
+    document.getElementById('eventTitlePopupDiv').innerText = value.name;
+    document.getElementById('eventDatePopupDiv').innerText = value.date;
+    document.getElementById('eventHourPopupDiv').innerText = value.time;
+    document.getElementById('eventDescriptionPopupDiv').innerText = value.description;
+    document.getElementById("eventImagePopup").src = value.imageURL;
+    callMapsAPI(eventLatitude, eventLongitude)
+    document.getElementById('overlay').style.display = 'block';
+    document.getElementById('popup').style.display = 'block';
+})
 }
 
 
@@ -132,5 +181,25 @@ async function deleteMyEvent(eventName) {
 
   
   }
+
+  /* async function saveNewContent() {
+    const information = document.getElementById("eventTitlePopupDiv").innerText;
+    const userName = localStorage.getItem("activeUser");
+    const eventId = localStorage.getItem("eventId");
+    localStorage.setItem("name", information);
+
+    const userObj = {name: information, _id: eventId};
+    
+    const answer = await makeRequest("http://localhost:8003/postUpdate", {
+        method: "POST",
+        body: JSON.stringify(userObj),
+        headers: { 
+            token: localStorage.getItem("token"),
+            "Content-type": "application/json; charset=UTF-8" },
+});
+
+    await answer.json();
+
+  } */
 
 

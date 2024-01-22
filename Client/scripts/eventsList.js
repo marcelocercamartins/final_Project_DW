@@ -276,10 +276,12 @@ function createPosts(){
         let anotherContainer = document.getElementById('another-container');
         let myEventListContainer = document.getElementById('myEventListContainer');
         let searchContainerMyEvents = document.getElementById('mySearchBox');
+        let noEventstoShow = document.getElementById('noEventstoShow');
         myEventListContainer.style.display = 'none';
         eventoSquare.style.display = 'block';
         anotherContainer.style.display = 'none';
         searchContainerMyEvents.style.display = 'none';
+        noEventstoShow.textContent = " ";
         // Change 'none' to 'block' to make the square appear
 }
 
@@ -335,6 +337,10 @@ async function myPosts() {
       }
       
       function createList(events) {
+        if (events.length === 0){
+                let noEvents = document.getElementById("eventShow");
+                noEvents.textContent = " ";
+        }
         const eventsContainer = document.getElementById("events-container");
       
         events.slice(-3,events.length).forEach((event) => {
