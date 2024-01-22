@@ -153,9 +153,15 @@ async function eventDetails(eventName) {
         document.getElementById('eventHourPopupDiv').innerText = eventInfo.resultSet.time;
         document.getElementById('eventDescriptionPopupDiv').innerText = eventInfo.resultSet.description;
         document.getElementById("eventImagePopup").src = eventInfo.resultSet.imageURL;
-        callMapsAPI(eventLatitude, eventLongitude);
+        
+        const needForMap = verifyCoordinates(eventCoordinates);
+
+        if (needForMap == 1){
+                callMapsAPI(eventLatitude, eventLongitude);
+        }
+        
         const userLogged = await verifyIfThereIsAUserLoggedIn();
-        console.log(userLogged);
+
         if (userLogged == 1){
                 document.getElementById("addToMyEventsButton").style.display = "block";
         } else {
@@ -166,6 +172,15 @@ async function eventDetails(eventName) {
         document.getElementById('popup').style.display = 'block';
         
 
+}
+
+function verifyCoordinates(eventCoordinates){
+        console.log(eventCoordinates);
+        if (eventCoordinates == ""){
+                return 0;
+        }
+
+        return 1;
 }
 
 async function verifyIfThereIsAUserLoggedIn(){
@@ -196,8 +211,15 @@ function hideEventDetails() {
 }
 
 function callMapsAPI(eventLatitude, eventLongitude) {
-        var mymap = L.map('eventMapAPIDiv').setView([eventLatitude, eventLongitude], 15);
-        
+        var mymap = L.map('eventMapAPIDiv', {
+                center: [eventLatitude, eventLongitude],
+                zoom: 15,
+                dragging: false,  
+                zoomControl: false,  
+                scrollWheelZoom: false,
+                doubleClickZoom: false  
+            });
+
         //força o carregamento das tiles
         setTimeout(function () {
                 window.dispatchEvent(new Event("resize"));

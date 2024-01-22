@@ -99,12 +99,14 @@ app.post("/addEventToUser", async (req, res) => {
     } 
      
     //Adição do evento ao utilizador
-    const userName = decode.username;
+    const decodedToken = jwt.verify(req.header('token'), secret);
+    const userName = decodedToken.username;
     const eventName = req.body.event;
 
     //Para atualizar apenas o array de eventos tenho de tirar o array atual adicionar o evento novo e dps atualizar o campo
     // preciso do id do objeto tb acho
     const userInfo = await findOneResult("users", { username: userName });
+    console.log(userInfo);
     const userID = userInfo._id;
     const userEventsList = userInfo.events;
 
@@ -310,9 +312,9 @@ async function updateObjectField2(table, filter,  value) {
 
 async function findOneResult(table, findWhat) {
     const dbConn = new MongoClient(uri);
-
     try {
         const findResult = await dbConn.db(database).collection(table).findOne(findWhat);
+        console.log("findOneResult: " + findResult);
         await dbConn.close();
         return findResult;
     } catch (err) {
