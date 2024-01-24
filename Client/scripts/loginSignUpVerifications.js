@@ -21,6 +21,11 @@ async function validateSignUp() {
         return;
     }
 
+    if (password.length < 5) {
+        document.getElementById("returnMessage").innerHTML = 'Password deve ter 5 ou mais caracteres' ;
+        return;
+    }
+
     await signUp();
 }
 

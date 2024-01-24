@@ -6,11 +6,6 @@ async function signUp() {
 
     const userObj = {username: name, password: password, email: email, };
 
-    if (password.length < 5) {
-        document.getElementById("returnMessage").innerHTML = 'Password deve ter 5 ou mais caracteres' ;
-        return;
-    }
-
     const answer = await makeRequest("http://localhost:8003/signUp", {
         method: "POST",
         body: JSON.stringify(userObj),
