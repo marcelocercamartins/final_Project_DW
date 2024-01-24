@@ -213,8 +213,14 @@ app.post("/addEvent", async (req, res) => {
         const username = req.body.username;
 
         const insertValue = {name: title, date: date, time:time, location: location, gps: gps, description: description, imageURL: image, username: username};
-        console.log("Insert Value:", insertValue);
         await insertLinesOnDatabase("events", insertValue);
+        //meter logo o evento criado na lista de favoritos do utilizador//
+        const userInfo = await findOneResult("users", { username: username });
+        const userID = userInfo._id;
+        const userEventsList = userInfo.events;
+        const updatedList = userEventsList.concat(title);
+        await updateObjectField("users", userID, updatedList);
+        //-------------------------------------------------------------//
         res.status(201).json({ msg: "Evento adicionado com sucesso" });
     } catch (err) {
         console.log("Error interno no servidor no endpoint addEvent " + error);

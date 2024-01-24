@@ -236,7 +236,11 @@ var map = null;
 
 function hideEventDetails() {
        //reset ao mapa
-        map.remove();   
+       try{
+        map.remove(); 
+       } catch(error){
+        console.log(error);
+       }         
         
         document.getElementById('overlay').style.display = 'none';
         document.getElementById('popup').style.display = 'none';
