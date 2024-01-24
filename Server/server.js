@@ -25,7 +25,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 /////////////////API Endpoints////////////////////////
-
 // Criar novo utilizador
 app.post("/signUp", async (req, res) => {
     const email = req.body.email;
@@ -35,10 +34,6 @@ app.post("/signUp", async (req, res) => {
     const findUserName = await findOneResult("users", { username: username });
 
     if (findUserName == null) {
-        if (password.length < 5) {
-            return res.status(400).send({ msg: 'Password deve ter 5 ou mais caracteres' });
-        }
-
         const saltRounds = 10;
         try {
             const hashedPassword = await bcrypt.hash(password, saltRounds);
