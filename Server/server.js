@@ -39,7 +39,6 @@ app.post("/signUp", async (req, res) => {
             return res.status(400).send({ msg: 'Password deve ter 5 ou mais caracteres' });
         }
 
-        // Hash password with bcrypt
         const saltRounds = 10;
         try {
             const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -51,7 +50,7 @@ app.post("/signUp", async (req, res) => {
             return res.status(201).send({ msg:""});
         } catch (error) {
             console.error("Erro ao criar o utilizador: " + error);
-            return res.status(500).send({ msg:'Erro ao criar utilizador'});
+            return res.status(500).send({ msg:'Erro interno de servidor'});
         }
     } else {
         console.log("Utilizador já existe");
@@ -72,12 +71,12 @@ app.post("/login", async (req, res) => {
         bcrypt.compare(password, findUser.password, (error, isMatch) => {
             if (error) {             
                 console.error("Erro ao comparar a password: ", error);
-                return res.status(500).json({ msg: "Erro de Servidor" });
+                return res.status(500).send({ msg:'Erro interno de servidor'});
             }
 
             if (isMatch) {           
                 const user = { username: name, password: findUser.password };
-                const token = jwt.sign(user, secret);
+                const token = jwt.sign(user, secret, {expiresIn: "60s"});
                 return res.status(200).json({ auth: true, token: token, msg: "" });
             } else { 
                 return res.status(401).json({ msg: "Password inválida!" });
@@ -91,154 +90,201 @@ app.post("/login", async (req, res) => {
 
 
 app.post("/addEventToUser", async (req, res) => {
-    //verificar se existe um utilizador logado
-    const userLoged = userAuthorization(req.header('token'));
-
-    if (!userLoged){
-        return res.status(401).json({});
-    } 
-     
-    //Adição do evento ao utilizador
-    const decodedToken = jwt.verify(req.header('token'), secret);
-    const userName = decodedToken.username;
-    const eventName = req.body.event;
-
-    //Para atualizar apenas o array de eventos tenho de tirar o array atual adicionar o evento novo e dps atualizar o campo
-    // preciso do id do objeto tb acho
-    const userInfo = await findOneResult("users", { username: userName });
-    console.log(userInfo);
-    const userID = userInfo._id;
-    const userEventsList = userInfo.events;
-
-    const verifyIfAlreadyAdded = verifyIfEventAlreadyOnList(userInfo, eventName);
+    try{
+        //verificar se existe um utilizador logado
+        const userToken = verifyToken(req.header('token'));
+        if (!userToken){
+            return res.status(401).json({msg:"Utilizador não autenticado"});
+        } 
+        
+        //Adição do evento ao utilizador
+        const userName = userToken.username;
+        const eventName = req.body.event;
     
-
-    if (verifyIfAlreadyAdded == 0) {
-        const updatedList = userEventsList.concat(eventName);
-        updateObjectField("users", userID, updatedList);
-        return res.status(201).json({ msg: "" });
-        } else {
-        return res.status(360).json({ msg: "" });
+        //Para atualizar apenas o array de eventos tenho de tirar o array atual adicionar o evento novo e dps atualizar o campo
+        // preciso do id do objeto tb acho
+        const userInfo = await findOneResult("users", { username: userName });
+        const userID = userInfo._id;
+        const userEventsList = userInfo.events;
+    
+        const verifyIfAlreadyAdded = verifyIfEventAlreadyOnList(userInfo, eventName);
+        
+        if (verifyIfAlreadyAdded == 0) {
+            const updatedList = userEventsList.concat(eventName);
+            updateObjectField("users", userID, updatedList);
+            return res.status(201).json({ msg: "" });
+            } else {
+            return res.status(360).json({ msg: "" });
+        }    
+    }catch(error){
+        console.log("Error interno no servidor no endpoint addEventToUser " + error);
+        return res.status(500).send({ msg:'Erro interno de servidor'});
     }
-
 })
 
 
-// registeredEvents   não existe necessidade de verificar token os eventos registados qualquer um pode ver
+// registeredEvents não existe necessidade de verificar token os eventos registados qualquer um pode ver
 app.get("/registeredEvents", async (req, res) => {
-    const eventsList = await findAll("events", {});
-    return res.json({ resultSet: eventsList });
+    try{
+         const eventsList = await findAll("events", {});
+        return res.status(200).json({ resultSet: eventsList });
+    }catch(error){
+        console.log("Error interno no servidor no endpoint registeredEvents " + error);
+        return res.status(500).send({ msg:'Erro interno de servidor'});
+    } 
 });
+
 
 // endpoint utilizado para fazer uma pesquisa de eventos especifica
 app.post("/searchForEvents", async (req, res) => {
-    const searchRaw = req.body;
-    const eventsList = [];
- 
-    const search = searchRaw.searchEvent;
+    try{
+        const searchRaw = req.body;
+        const eventsList = [];
     
-    eventsList.push(await findAll("events", {name: new RegExp(search, 'i')}))
-    eventsList.push(await findAll("events", {date: new RegExp(search, 'i')}))
-    eventsList.push(await findAll("events", {time: new RegExp(search, 'i')}))
-    eventsList.push(await findAll("events", {location: new RegExp(search, 'i')}))
+        const search = searchRaw.searchEvent;
+        
+        eventsList.push(await findAll("events", {name: new RegExp(search, 'i')}))
+        eventsList.push(await findAll("events", {date: new RegExp(search, 'i')}))
+        eventsList.push(await findAll("events", {time: new RegExp(search, 'i')}))
+        eventsList.push(await findAll("events", {location: new RegExp(search, 'i')}))
 
-    return res.json({ resultSet: eventsList });
-});
-
-//endpoint para utilizado para obter os detalhes de determinado evento
-app.post("/eventDetails", async (req, res) => {
-    const eventName = req.body.name;
-    const filter = { name: eventName};
-
-    const eventInfo = await findOneResult("events", filter);
-    return res.json({ resultSet: eventInfo });
-});
-
-//endpoint utilizado para remoção de eventos
-app.delete("/deleteEvent", async (req, res) => {
-    const userLoged = userAuthorization(req.header('token'));
-
-    if (!userLoged){
-        return res.status(401).json({});
-    } 
-     
-    
-    const eventName = req.body.name; 
-    // Nome do evento deve vir no body, caso não venha é somente necessário introduzir variável de entrada
-
-    try {
-        const result = await deleteEvent(eventName);
-        if (result.deletedCount === 0) {
-            res.status(404).json({ msg: "Evento não foi encontrado ou já foi anteriormente apagado" });
-        } else {
-            res.status(200).json({ msg: "Evento apagado com sucesso" });
-        }
-    } catch (err) {
-        res.status(500).json({ msg: "Falha ao remover o evento" });
+        return res.status(200).json({ resultSet: eventsList });
+    }catch(error){
+        console.log("Error interno no servidor no endpoint searchForEvents " + error);
+        return res.status(500).send({ msg:'Erro interno de servidor'});
     }
 });
 
+
+//endpoint para utilizado para obter os detalhes de determinado evento
+app.post("/eventDetails", async (req, res) => {
+    try{
+        const eventName = req.body.name;
+        const filter = { name: eventName};
+
+        const eventInfo = await findOneResult("events", filter);
+        return res.status(200).json({ resultSet: eventInfo });
+    }catch(error){
+        console.log("Error interno no servidor no endpoint eventDetails " + error);
+        return res.status(500).send({ msg:'Erro interno de servidor'});
+    }
+});
+
+
+//endpoint utilizado para remoção de eventos
+app.delete("/deleteEvent", async (req, res) => {
+    try{
+        const userToken = verifyToken(req.header('token'));
+        if (!userToken){
+            return res.status(401).json({msg:"Utilizador não autenticado"});
+        } 
+            
+        const eventName = req.body.name; 
+        // Nome do evento deve vir no body, caso não venha é somente necessário introduzir variável de entrada
+    
+        try {
+            const result = await deleteEvent(eventName);
+            if (result.deletedCount === 0) {
+                res.status(404).json({ msg: "Evento não foi encontrado ou já foi anteriormente apagado" });
+            } else {
+                res.status(200).json({ msg: "Evento apagado com sucesso" });
+            }
+        } catch (err) {
+            res.status(500).json({ msg: "Falha ao remover o evento" });
+        }
+    }catch(error){
+        console.log("Error interno no servidor no endpoint deleteEvent " + error);
+        return res.status(500).send({ msg:'Erro interno de servidor'});
+    }
+});
+
+
 //endpoint para criar evento
 app.post("/addEvent", async (req, res) => {
-    const userLoged = userAuthorization(req.header('token'));
-
-    if (!userLoged){
-        return res.status(401).json({});
-    } 
-       
-    console.log("Received Data:", req.body);
-    const title = req.body.name;
-    const date = req.body.date;
-    const time = req.body.time;
-    const location = req.body.location;
-    const gps = req.body.gps;
-    const description = req.body.description;
-    const image= req.body.imageURL;
-    const username = req.body.username;
-
     try {
+        const userToken = verifyToken(req.header('token'));
+        if (!userToken){
+            return res.status(401).json({msg:"Utilizador não autenticado"});
+        } 
+        
+        console.log("Received Data:", req.body);
+        const title = req.body.name;
+        const date = req.body.date;
+        const time = req.body.time;
+        const location = req.body.location;
+        const gps = req.body.gps;
+        const description = req.body.description;
+        const image= req.body.imageURL;
+        const username = req.body.username;
+
         const insertValue = {name: title, date: date, time:time, location: location, gps: gps, description: description, imageURL: image, username: username};
         console.log("Insert Value:", insertValue);
         await insertLinesOnDatabase("events", insertValue);
-        res.status(200).json({ msg: "Evento adicionado com sucesso" });
+        res.status(201).json({ msg: "Evento adicionado com sucesso" });
     } catch (err) {
+        console.log("Error interno no servidor no endpoint addEvent " + error);
         res.status(500).json({ msg: "Falha ao adicionar o evento" });
     }
 });
 
 app.post("/userInfoUpdate", async (req,res) => {
-    const userLoged = userAuthorization(req.header('token'));
-
-    if (!userLoged){
-        return res.status(401).json({});
-    } 
-
-    const information = req.body.information;
-    const username = req.body.username;
-    const filter = { username: username};
-    console.log(filter);
-    const include = { information: information };
-    console.log(include);
-
-    await updateObjectField2("users", filter, include);
-    res.status(200).json({ msg: "Informação adicionada com sucesso" });
+    try{
+        const userToken = verifyToken(req.header('token'));
+        if (!userToken){
+            return res.status(401).json({msg:"Utilizador não autenticado"});
+        }
+    
+        const information = req.body.information;
+        const username = req.body.username;
+        const filter = { username: username};
+        console.log(filter);
+        const include = { information: information };
+        console.log(include);
+    
+        await updateObjectField2("users", filter, include);
+        res.status(200).json({ msg: "Informação adicionada com sucesso" });
+    }catch(error){
+        console.log("Error interno no servidor no endpoint userInfoUpdate " + error);
+        res.status(500).json({ msg: "Falha ao adicionar o evento" });
+    }
 });
     
+
 //endpoint utilizado para receber os eventos de um utilizador
 app.post("/myEvents", async (req, res) => {
-    const userLoged = userAuthorization(req.header('token'));
-
-    if (!userLoged){
-        return res.status(401).json({});
-    } 
-
-    const username = req.body.username;
-    const filter = { username: username};
+    try{
+        const userToken = verifyToken(req.header('token'));
+        if (!userToken){
+            return res.status(401).json({msg:"Utilizador não autenticado"});
+        } 
     
-    const eventsList = await findAll("events", filter);
-    console.log(eventsList);
-    return res.json({ resultSet: eventsList });
+        const username = req.body.username;
+        const filter = { username: username};
+        
+        const eventsList = await findAll("events", filter);
+        console.log(eventsList);
+        return res.status(200).json({ resultSet: eventsList });
+    }catch(error){
+        console.log("Error interno no servidor no endpoint myEvents " + error);
+        res.status(500).json({ msg: "Falha ao adicionar o evento" });
+    }  
 });
+
+
+app.get("/verifyIfUserIsLoggendIn", async(req, res) => {
+    try{
+        const userToken = verifyToken(req.header('token'));
+        if (!userToken){
+            return res.status(401).json({msg:"Utilizador não autenticado"});
+        }
+         
+        return res.status(200).json({});
+    }catch(error){
+        console.log("Error interno no servidor no endpoint verifyIfUserIsLoggendIn " + error);
+        res.status(500).json({ msg: "Falha ao adicionar o evento" });
+    }
+})
+
 
 function verifyIfEventAlreadyOnList(userInfo, event) {
     const userEvents = userInfo.events;
@@ -251,14 +297,6 @@ function verifyIfEventAlreadyOnList(userInfo, event) {
     return 0;
 }
 
-app.get("/verifyIfUserIsLoggendIn", async(req, res) => {
-    const userLoged = userAuthorization(req.header('token'));
-
-    if (!userLoged){
-        return res.status(401).json({});
-    } 
-    return res.status(200).json({});
-})
 
 /////////////////funções Base de dados////////////////////////
 
@@ -371,14 +409,6 @@ async function deleteEvent(eventName) {
 }
 
 /////////////////funções de apoio////////////////////////
-function userAuthorization(token){
-    const decoded = verifyToken(token);
-    if (!decoded) {
-        return false    
-    }
-    return true;
-}
-
 function verifyToken(token) {
     try {
         return jwt.verify(token, secret);

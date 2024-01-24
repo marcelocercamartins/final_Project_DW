@@ -8,14 +8,27 @@ async function displayEvents() {
                 },
         });
         const eventsList = await answer.json();
-        createEventsList(eventsList);
+        switch (answer.status) {
+                case 200:
+                {
+                        createEventsList(eventsList.resultSet);
+                        break;
+                }
+                default:
+                {
+                        // Erro detetado
+                        alert(json.msg);
+                        break;
+                }
+        }
 }
+
 
 async function eventSearcher(){
         const searchEvent = document.getElementById("searchBox").value;
           
         if (searchEvent.length > 1){
-                const answerSearch = await makeRequest("http://localhost:8003/searchForEvents", {
+                const answer = await makeRequest("http://localhost:8003/searchForEvents", {
                         method: "POST",
                         body: JSON.stringify({searchEvent}),
                         headers: {
@@ -23,10 +36,21 @@ async function eventSearcher(){
                                 "Content-type": "application/json; charset=UTF-8",
                         },
                 });
-                const eventsListSearch = await answerSearch.json();
-                console.log(eventsListSearch);
-                const eventsList = prepareList(eventsListSearch.resultSet);        
-                createEventsList(eventsList);
+                const eventsListSearch = await answer.json();
+                switch (answer.status) {
+                        case 200:
+                        {
+                                const eventsList = prepareList(eventsListSearch.resultSet);        
+                                createEventsList(eventsList.resultSet);
+                                break;
+                        }
+                        default:
+                        {
+                                // Erro detetado
+                                alert(json.msg);
+                                break;
+                        }
+                }    
         } else {
                 displayEvents();
         }
@@ -50,7 +74,7 @@ function createEventsList(eventsList){
         const refreshPage = document.getElementById("eventListContainer");
         refreshPage.innerHTML = "";
         //resultSet é o objeto que vem da base de dados com as informações do evento
-        Object.entries(eventsList.resultSet).forEach(([key, value]) => {
+        Object.entries(eventsList).forEach(([key, value]) => {
                 const container = document.querySelector(".eventListContainer");
 
                 //main div contem toda a informação do evento
@@ -141,37 +165,46 @@ async function eventDetails(eventName) {
                         "Content-type": "application/json; charset=UTF-8",
                 },
         });
-
         const eventInfo = await answer.json();
-        const eventCoordinates = eventInfo.resultSet.gps.split(", ");
-        const eventLatitude = eventCoordinates[0];
-        const eventLongitude = eventCoordinates[1];
-
-        //alteração do conteudo do popup conforme o evento. resultSet é o objeto que vem da base de dados com as informações do evento
-        document.getElementById('eventTitlePopupDiv').innerText = eventInfo.resultSet.name;
-        document.getElementById('eventDatePopupDiv').innerText = eventInfo.resultSet.date;
-        document.getElementById('eventHourPopupDiv').innerText = eventInfo.resultSet.time;
-        document.getElementById('eventDescriptionPopupDiv').innerText = eventInfo.resultSet.description;
-        document.getElementById("eventImagePopup").src = eventInfo.resultSet.imageURL;
-        
-        const needForMap = verifyCoordinates(eventCoordinates);
-
-        if (needForMap == 1){
-                callMapsAPI(eventLatitude, eventLongitude);
-        }
-        
-        const userLogged = await verifyIfThereIsAUserLoggedIn();
-
-        if (userLogged == 1){
-                document.getElementById("addToMyEventsButton").style.display = "block";
-        } else {
-                document.getElementById("addToMyEventsButton").style.display = "none";
-        }
-
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('popup').style.display = 'block';
-        
-
+        switch (answer.status) {
+                case 200:
+                {
+                        const eventCoordinates = eventInfo.resultSet.gps.split(", ");
+                        const eventLatitude = eventCoordinates[0];
+                        const eventLongitude = eventCoordinates[1];
+                
+                        //alteração do conteudo do popup conforme o evento. resultSet é o objeto que vem da base de dados com as informações do evento
+                        document.getElementById('eventTitlePopupDiv').innerText = eventInfo.resultSet.name;
+                        document.getElementById('eventDatePopupDiv').innerText = eventInfo.resultSet.date;
+                        document.getElementById('eventHourPopupDiv').innerText = eventInfo.resultSet.time;
+                        document.getElementById('eventDescriptionPopupDiv').innerText = eventInfo.resultSet.description;
+                        document.getElementById("eventImagePopup").src = eventInfo.resultSet.imageURL;
+                        
+                        const needForMap = verifyCoordinates(eventCoordinates);
+                
+                        if (needForMap == 1){
+                                callMapsAPI(eventLatitude, eventLongitude);
+                        }
+                        
+                        const userLogged = await verifyIfThereIsAUserLoggedIn();
+                
+                        if (userLogged == 1){
+                                document.getElementById("addToMyEventsButton").style.display = "block";
+                        } else {
+                                document.getElementById("addToMyEventsButton").style.display = "none";
+                        }
+                
+                        document.getElementById('overlay').style.display = 'block';
+                        document.getElementById('popup').style.display = 'block';
+                        break;
+                }
+                default:
+                {
+                        // Erro detetado
+                        alert(json.msg);
+                        break;
+                }
+        }    
 }
 
 function verifyCoordinates(eventCoordinates){
@@ -264,6 +297,7 @@ async function addToMyEvents() {
                                 setTimeout(function(){
                                         warning.textContent = "";
                                 }, 3000);
+                                logout();
                                 break;
                         }
 
@@ -329,9 +363,9 @@ async function addEvent() {
         const gps = document.getElementById("gpsInput").value;
         const description = document.getElementById("descriptionInput").value;
         const image = document.getElementById("imageInput").value;
-        const username = localStorage.getItem("activeUser");
-    
+        const username = localStorage.getItem("activeUser"); 
         const postObj = {name: title, date: date, time:time, location: location, gps: gps, description: description, imageURL: image, username: username};
+       
         const answer = await makeRequest("http://localhost:8003/addEvent", {
             method: "POST",
             body: JSON.stringify(postObj),
@@ -339,6 +373,24 @@ async function addEvent() {
                 token: localStorage.getItem("token"),
                 "Content-type": "application/json; charset=UTF-8" },
         });
+        const result = await answer.json();
+        switch (answer.status) {
+                case 201:
+                {  
+                        break;
+                }
+                case 401:
+                {
+                        logout();
+                        break;
+                }
+                default:
+                {
+                        // Erro detetado
+                        alert(json.msg);
+                        break;
+                }
+        }    
     
 }
     
@@ -354,6 +406,23 @@ async function myPosts() {
           },
         });
         const myEventsList = await answer.json();
+        switch (answer.status) {
+                case 200:
+                {  
+                        break;
+                }
+                case 401:
+                {
+                        logout();
+                        break;
+                }
+                default:
+                {
+                        // Erro detetado
+                        alert(json.msg);
+                        break;
+                }
+        }    
       
         createList(myEventsList.resultSet);
       }
