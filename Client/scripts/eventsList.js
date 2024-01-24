@@ -232,39 +232,38 @@ async function verifyIfThereIsAUserLoggedIn(){
         }
 }
 
+var map = null;
+
 function hideEventDetails() {
        //reset ao mapa
-        var container = L.DomUtil.get('eventMapAPIDiv');
-        if(container != null){
-                container._leaflet_id = null;
-        }        
+        map.remove();   
         
         document.getElementById('overlay').style.display = 'none';
         document.getElementById('popup').style.display = 'none';
 }
 
 function callMapsAPI(eventLatitude, eventLongitude) {
-        var mymap = L.map('eventMapAPIDiv', {
+        map = L.map('eventMapAPIDiv', {
                 center: [eventLatitude, eventLongitude],
                 zoom: 15,
-                dragging: false,  
-                zoomControl: false,  
-                scrollWheelZoom: false,
-                doubleClickZoom: false  
+                dragging: true,  
+                zoomControl: true,  
+                scrollWheelZoom: true,
+                doubleClickZoom: true  
             });
 
         //força o carregamento das tiles
         setTimeout(function () {
                 window.dispatchEvent(new Event("resize"));
-             }, 1);
+             }, 100);
         
         // Adicione um Tile Layer do OpenStreetMap (necessário - direitos de autor)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(mymap);     
+        }).addTo(map);     
                                      
         // Adicione um marcador
-        L.marker([eventLatitude, eventLongitude]).addTo(mymap) 
+        L.marker([eventLatitude, eventLongitude]).addTo(map) 
 }
 
 async function addToMyEvents() {
