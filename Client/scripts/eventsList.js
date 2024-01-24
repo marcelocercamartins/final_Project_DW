@@ -412,6 +412,7 @@ async function myPosts() {
         switch (answer.status) {
                 case 200:
                 {  
+                        createList(myEventsList.resultSet);
                         break;
                 }
                 case 401:
@@ -426,11 +427,9 @@ async function myPosts() {
                         break;
                 }
         }    
-      
-        createList(myEventsList.resultSet);
-      }
-      
-      function createList(events) {
+}
+
+function createList(events) {
         if (events.length === 0){
                 let noEvents = document.getElementById("eventShow");
                 noEvents.textContent = " ";
@@ -465,5 +464,4 @@ async function myPosts() {
       
           eventsContainer.appendChild(eventElement);
         });
-      }
-
+}

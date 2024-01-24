@@ -223,7 +223,7 @@ app.post("/addEvent", async (req, res) => {
         //-------------------------------------------------------------//
         res.status(201).json({ msg: "Evento adicionado com sucesso" });
     } catch (err) {
-        console.log("Error interno no servidor no endpoint addEvent " + error);
+        console.log("Error interno no servidor no endpoint addEvent " + err);
         res.status(500).json({ msg: "Falha ao adicionar o evento" });
     }
 });
@@ -263,7 +263,18 @@ app.post("/myEvents", async (req, res) => {
         const filter = { username: username};
         
         const eventsList = await findAll("events", filter);
-        console.log(eventsList);
+
+        //para juntar os eventos na lista de favoritos//
+        const userInfo = await findAll("users", filter);
+        const favoritesList = userInfo[0].events;
+        if (favoritesList.length > 0){
+            for (i = 0; i < favoritesList.length; i++){
+                eventsList.push(await findOneResult("events", {name : favoritesList[i]}));
+            }
+        }
+
+        console.log(favoritesList);
+        //--------------------------------------------//
         return res.status(200).json({ resultSet: eventsList });
     }catch(error){
         console.log("Error interno no servidor no endpoint myEvents " + error);
