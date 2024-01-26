@@ -40,7 +40,6 @@
                 <span id="activeUser_text">{User}</span>
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="">Definições</a></li>
                 <li><a class="dropdown-item" href="" onclick="logout()">Sair</a></li>
               </ul>
             </li>
@@ -129,6 +128,7 @@
   <footer class="py-5 bg-black">
     <div class="container px-5">
       <p class="m-0 text-center text-white small">Copyright &copy; Your Website 2024</p>
+      <p class="m-0 text-center text-white small"><a href="aboutUs.html">Sobre Nós</a></p>
     </div>
   </footer>
 
@@ -136,6 +136,17 @@
     window.onload = function () {
       renderPageAfterLoadHtmlElements();
     };
+
+    window.addEventListener('scroll', function() {
+      var py5Element = document.querySelector('.py-5');
+
+      // Verifica se o utilizador chegou ao final da página
+      if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight) {
+        py5Element.style.display = 'block'; 
+      } else {
+        py5Element.style.display = 'none'; 
+      }
+    });
   </script>
 </body>
 

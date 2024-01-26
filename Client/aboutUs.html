@@ -6,15 +6,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Event Eagle</title>
-  <script src= "scripts/userHandle.js"></script>
+  <script src="scripts/userHandle.js"></script>
   <script src = "scripts/eventsList.js"></script>
+  <script src = "scripts/editMyEvents.js"></script>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i" rel="stylesheet" />
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!--Biblioteca Leaflet (OpenStreetMap API)-->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
@@ -55,54 +56,22 @@
     </div>
   </nav>
 
-  <!-- div para pesquisa de eventos -->
-  <div class="searchContainer">
-    <input id="searchBox" type="text" name="searchBox" placeholder="Pesquisa" oninput="eventSearcher()">
-  </div>
-
-  <!-- div com os eventos -->
-  <div class = "eventListContainer" id = "eventListContainer"></div>
-  
-  <!-- popup com os detalhes do evento -->
-  <div class="overlay" id="overlay" onclick="hideEventDetails()"></div>
-    <div class="popup" id="popup">
-      <span class="close-btn" onclick="hideEventDetails()">X</span>
-      <div class="event-details" id="eventImagePopupDiv">
-        <img id="eventImagePopup" src="" alt="" width="150px" height="150px">
-      </div> 
-      <div class="event-details" id="eventTitlePopupDiv"></div>
-      <div class="event-details" id="eventDatePopupDiv"></div>
-      <div class="event-details" id="eventHourPopupDiv"></div>
-      <div class="event-details" id="eventDescriptionPopupDiv"></div>
-      <div class="event-map" id="eventMapAPIDiv"></div>
-      <button class="btn btn-primary" id="addToMyEventsButton" onclick="addToMyEvents()">Adicionar aos Meus Eventos</button>
-      <span id="warning"></span>
-  </div>
-  
-  <!-- Footer-->
-  <footer class="py-5 bg-black">
-    <div class="container px-5">
-      <p class="m-0 text-center text-white small">Copyright &copy; Your Website 2024</p>
-      <p class="m-0 text-center text-white small"><a href="aboutUs.html">Sobre Nós</a></p>
+  <!--Content-->
+  <header class="masthead text-center text-white">
+    <div class="container px-6">
+      <h1 class="masthead-heading mb-100">Trabalho Realizado por:</h1>
+      <h1 class="masthead-heading mb-0">Bernardo Pires 30008234</h1>
+      <h1 class="masthead-heading mb-0">Christian Duarte 30009280</h1>
+      <h1 class="masthead-heading mb-0">Miguel Rico 30008432</h1>
+      <h1 class="masthead-heading mb-0">Sara Nogueira 20100868</h1>
     </div>
-  </footer>
-
+  </header>
+  
+ 
   <script>
     window.onload = function () {
       renderPageAfterLoadHtmlElements();
-      displayEvents();
     };
-
-    window.addEventListener('scroll', function() {
-      var py5Element = document.querySelector('.py-5');
-      
-      // Verifica se o utilizador chegou ao final da página
-      if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight) {
-        py5Element.style.display = 'block'; 
-      } else {
-        py5Element.style.display = 'none'; 
-      }
-    });
   </script>
 </body>
 
