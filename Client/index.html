@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Event Eagle</title>
   <script src="scripts/userHandle.js"></script>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/index.css"/>
   <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet" />
@@ -137,16 +137,7 @@
       renderPageAfterLoadHtmlElements();
     };
 
-    window.addEventListener('scroll', function() {
-      var py5Element = document.querySelector('.py-5');
-
-      // Verifica se o utilizador chegou ao final da página
-      if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight) {
-        py5Element.style.display = 'block'; 
-      } else {
-        py5Element.style.display = 'none'; 
-      }
-    });
+    
   </script>
 </body>
 

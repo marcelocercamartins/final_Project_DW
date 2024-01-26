@@ -71,7 +71,7 @@ app.post("/login", async (req, res) => {
 
             if (isMatch) {           
                 const user = { username: name, password: findUser.password };
-                const token = jwt.sign(user, secret, {expiresIn: "900s"});
+                const token = jwt.sign(user, secret, {expiresIn: "5s"});
                 return res.status(200).json({ auth: true, token: token, msg: "" });
             } else { 
                 return res.status(401).json({ msg: "Password inválida!" });

@@ -300,7 +300,7 @@ async function addToMyEvents() {
                                 setTimeout(function(){
                                         warning.textContent = "";
                                 }, 3000);
-                                logout();
+                                logoutByExpiredToken();
                                 break;
                         }
 
@@ -384,7 +384,7 @@ async function addEvent() {
                 }
                 case 401:
                 {
-                        logout();
+                        logoutByExpiredToken();
                         break;
                 }
                 default:
@@ -417,7 +417,7 @@ async function myPosts() {
                 }
                 case 401:
                 {
-                        logout();
+                        logoutByExpiredToken();
                         break;
                 }
                 default:

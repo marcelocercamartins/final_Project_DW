@@ -115,6 +115,14 @@ function logout() {
 }
 
 
+function logoutByExpiredToken() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("login");
+    localStorage.removeItem("activeUser");
+    window.location.href = "login.html";
+}
+
+
 function renderPageAfterLoadHtmlElements() {
     const login = localStorage.getItem("login")
     if (login == "true") {
