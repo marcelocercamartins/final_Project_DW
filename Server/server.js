@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const nodemailer = require('nodemailer');
 const { decode } = require('punycode');
 const bcrypt = require('bcrypt');
@@ -71,7 +71,7 @@ app.post("/login", async (req, res) => {
 
             if (isMatch) {           
                 const user = { username: name, password: findUser.password };
-                const token = jwt.sign(user, secret, {expiresIn: "5s"});
+                const token = jwt.sign(user, secret, {expiresIn: "900s"});
                 return res.status(200).json({ auth: true, token: token, msg: "" });
             } else { 
                 return res.status(401).json({ msg: "Password inválida!" });
@@ -249,6 +249,27 @@ app.post("/userInfoUpdate", async (req,res) => {
         res.status(500).json({ msg: "Falha ao adicionar o evento" });
     }
 });
+
+app.post("/postInfoUpdate", async (req,res) => {
+    try{
+        const userToken = verifyToken(req.header('token'));
+        if (!userToken){
+            return res.status(401).json({msg:"Utilizador não autenticado"});
+        }
+        console.log("oi?")
+        const information = req.body.name;
+        const eventId = req.body._id;
+        console.log(eventId);
+        const include = { name: information };
+        console.log(include);
+    
+        await updatePost("events", eventId, include);
+        res.status(200).json({ msg: "Informação adicionada com sucesso" });
+    }catch(error){
+        console.log("Error interno no servidor no endpoint postInfoUpdate " + error);
+        res.status(500).json({ msg: "Falha ao adicionar o evento" });
+    }
+});
     
 
 //endpoint utilizado para receber os eventos de um utilizador
@@ -340,7 +361,7 @@ async function updateObjectField(table, id, value) {
     const dbConn = new MongoClient(uri);
     try {
         const insert_db = await dbConn.db(database);
-        insert_db.collection(table).updateOne({ _id: id }, { $set: { "events": value } })
+        insert_db.collection(table).updateOne({ _id: id }, { $set: { "name": value } })
     } catch (err) {
         console.log(err)
     } finally {
@@ -348,10 +369,11 @@ async function updateObjectField(table, id, value) {
     }
 }
 
+
 async function updateObjectField2(table, filter,  value) {
     const dbConn = new MongoClient(uri);
     try {
-        const insert_db = dbConn.db(database);
+        const insert_db = await dbConn.db(database);
         insert_db.collection(table).updateOne(filter, {$set: { "information": value } })
     } catch (err) {
         console.log(err)
@@ -359,6 +381,22 @@ async function updateObjectField2(table, filter,  value) {
         await dbConn.close();
     }
 } 
+
+async function updatePost(table, filter,  value) {
+    console.log(table, filter,  value);
+    const dbConn = new MongoClient(uri);
+    try {
+        const insert_db = await dbConn.db(database);
+        insert_db.collection(table).updateOne({ _id: filter}, {$set: value});
+        console.log("Adicionado com sucesso");
+    } catch (err) {
+        console.log(err)
+    } finally {
+        await dbConn.close();
+    }
+} 
+
+
 
 async function findOneResult(table, findWhat) {
     const dbConn = new MongoClient(uri);

@@ -182,15 +182,15 @@ async function deleteMyEvent(eventName) {
   
   }
 
-  /* async function saveNewContent() {
-    const information = document.getElementById("eventTitlePopupDiv").innerText;
-    const userName = localStorage.getItem("activeUser");
+    async function saveNewContent() {
+    const information = document.getElementById("eventTitlePopupDiv").innerHTML;
     const eventId = localStorage.getItem("eventId");
     localStorage.setItem("name", information);
 
     const userObj = {name: information, _id: eventId};
+    console.log("estamos aqui", userObj)
     
-    const answer = await makeRequest("http://localhost:8003/postUpdate", {
+    const answer = await makeRequest("http://localhost:8003/postInfoUpdate", {
         method: "POST",
         body: JSON.stringify(userObj),
         headers: { 
@@ -200,6 +200,6 @@ async function deleteMyEvent(eventName) {
 
     await answer.json();
 
-  } */
+  }  
 
 
