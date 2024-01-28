@@ -112,7 +112,7 @@
   <div id="eventoSquare">
     
       <label for="imageInput">Imagem: </label>
-      <input type="url" id="imageInput" name="imageInput" placeholder="URL format" style="font-size:13px">
+      <input type="url" id="imageInput" name="imageInput" placeholder="URL format" style="font-size:13px" value="https://cdn-cjhkj.nitrocdn.com/krXSsXVqwzhduXLVuGLToUwHLNnSxUxO/assets/images/optimized/rev-a53fc9c/spotme.com/wp-content/uploads/2020/07/Hero-1.jpg">
       <br>
       <label for="titleInput">Título do evento:</label>
       <input type="text" id="titleInput" name="titleInput" placeholder="Title" style="font-size:13px">
@@ -127,7 +127,7 @@
       <input type="text" id="locationInput" name="locationInput" placeholder="Nos Arena" style="font-size:13px">
       <br>
       <label for="gpsInput">Coordenadas:</label>
-      <input type="text" id="gpsInput" name="gpsInput" placeholder="38.7673, -9.09381" style="font-size:13px"></input>
+      <input type="text" id="gpsInput" name="gpsInput" placeholder="38.7673, -9.09381" style="font-size:13px" value="38.7673, -9.09381"></input>
       <br>
 
       <label for="descriptionInput">Descrição:</label>
@@ -142,25 +142,29 @@
 
 <!-- div para pesquisa de eventos -->
   <input id="mySearchBox" type="text" name="searchBox" placeholder="Pesquisa" oninput="myEventSearcher()">
-  <h4 id="noEventstoShow"></h4>
 
 
 <!-- div com os eventos -->
-<div class = "myEventListContainer" id = "myEventListContainer"></div>
+<p id="myPoststext">Meus Posts</p>
+<div class = "myEventListContainer" id = "myEventListContainer">
+</div>
+<p id="myFavoritesText">Favoritos</p>
+<div class = "myFavoriteListContainer" id = "myFavoriteListContainer"></div>
 <a id="backButton" class="btn-primary" href="myEvents.html">Voltar</a>
 
 <!-- popup com os detalhes do evento -->
 <div class="overlay" id="overlay" onclick="hideMyEventDetails()"></div>
   <div class="popup" id="popup">
     <button id ="saveNewContent"class="btn btn-primary" onclick="saveNewContent()">Save</button>
+    <button id ="editButton"><i class="fas fa-edit"></i></button>
     <span class="close-btn" onclick="hideEventDetails()">X</span>
     <div class="event-details" id="eventImagePopupDiv">
-      <img id="eventImagePopup" src="" alt="" width="150px" height="150px">
-    </div> 
-    <div class="event-details" id="eventTitlePopupDiv" contenteditable="true"></div>
-    <div class="event-details" id="eventDatePopupDiv"></div>
-    <div class="event-details" id="eventHourPopupDiv"></div>
-    <div class="event-details" id="eventDescriptionPopupDiv"></div>
+      <img id="eventImagePopup" src="" alt="" width="150px" height="150px" contenteditable="false"></div> 
+      <input type="url" id="newImageInput" name="newImageInput" placeholder="URL format" style="font-size:13px">
+    <div class="event-details" id="eventTitlePopupDiv" contenteditable="false"></div>
+    <div class="event-details" id="eventDatePopupDiv" contenteditable="false"></div>
+    <div class="event-details" id="eventHourPopupDiv" contenteditable="false"></div>
+    <div class="event-details" id="eventDescriptionPopupDiv" contenteditable="false"></div>
     <div class="event-map" id="eventMapAPIDiv"></div>
 </div>
 
@@ -178,14 +182,25 @@
       renderPageAfterLoadHtmlElements();
       myPosts();
       myEvents();
-      let textInputValue = localStorage.getItem("information");
-      let outputElement = document.getElementById("output");
-      outputElement.innerHTML = textInputValue;
+      myFavorites();
+      
+      document.getElementById('editButton').addEventListener('click', function() {
+        const eventTitle = document.getElementById('eventTitlePopupDiv');
+        const eventDate = document.getElementById('eventDatePopupDiv');
+        const eventHour= document.getElementById('eventHourPopupDiv');
+        const eventDescription = document.getElementById('eventDescriptionPopupDiv');
+        const eventImage = document.getElementById('eventImagePopup');
+        const newEventImage = document.getElementById('newImageInput');
     
-
+        eventTitle.contentEditable = true;
+        eventDate.contentEditable = true;
+        eventHour.contentEditable = true;
+        eventDescription.contentEditable = true;
+        eventImage.contentEditable = true;
+        newEventImage.style.display = 'flex';
+        
   
-
-
+      });
     };
     window.addEventListener('scroll', function() {
       var py5Element = document.querySelector('.py-5');

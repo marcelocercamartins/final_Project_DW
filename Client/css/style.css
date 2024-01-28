@@ -11082,11 +11082,11 @@ header.masthead .bg-circle-4 {
     display: none;
     
   }
-  #noEventstoShow{
+  #noEventstoShow, #myPoststext, #myFavoritesText{
     text-align: center;
   }
 
-  .myEventListContainer, #mySearchBox, #backButton{
+  .myEventListContainer, #mySearchBox, #backButton, #newImageInput, #myFavoriteListContainer{
     display: none;
   }
   
@@ -11100,6 +11100,25 @@ header.masthead .bg-circle-4 {
     width: 4%;
     justify-content: flex-end;
     text-decoration: none;
+  }
+
+  #saveNewContent, #editButton{
+    position: absolute;
+    top: 10px;
+    right: 40px;
+  }
+
+  #editButton{
+    position: absolute;
+    top: 25px;
+    right: 120px;
+  }
+ 
+  #myPoststext, #myFavoritesText{
+    font-weight: bold;
+    font-size: 20px;
+    display: none;
+
   }
  
 

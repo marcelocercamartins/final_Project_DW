@@ -64,8 +64,6 @@ function prepareList(eventsListSearch) {
                 preparedList.resultSet.push(...eventsListSearch[i]);
             }
         }
-    
-        console.log(preparedList);
         return preparedList;
     }
 
@@ -244,6 +242,7 @@ function hideEventDetails() {
         
         document.getElementById('overlay').style.display = 'none';
         document.getElementById('popup').style.display = 'none';
+        myEvents();
 }
 
 function callMapsAPI(eventLatitude, eventLongitude) {
@@ -272,7 +271,7 @@ function callMapsAPI(eventLatitude, eventLongitude) {
 
 async function addToMyEvents() {
         const eventName = document.getElementById("eventTitlePopupDiv").innerText;
-        const eventObj = { event: eventName, }
+        const eventObj = { event: eventName }
 
         const answer = await makeRequest("http://localhost:8003/addEventToUser", {
                 method: "POST",
@@ -331,30 +330,35 @@ async function addToMyEvents() {
 }
 
 function createPosts(){
-        let eventoSquare = document.getElementById('eventoSquare');
-        let anotherContainer = document.getElementById('another-container');
-        let myEventListContainer = document.getElementById('myEventListContainer');
-        let searchContainerMyEvents = document.getElementById('mySearchBox');
-        let noEventstoShow = document.getElementById('noEventstoShow');
+        const eventoSquare = document.getElementById('eventoSquare');
+        const anotherContainer = document.getElementById('another-container');
+        const myEventListContainer = document.getElementById('myEventListContainer');
+        const searchContainerMyEvents = document.getElementById('mySearchBox');
         myEventListContainer.style.display = 'none';
         eventoSquare.style.display = 'block';
         anotherContainer.style.display = 'none';
         searchContainerMyEvents.style.display = 'none';
-        noEventstoShow.textContent = " ";
         // Change 'none' to 'block' to make the square appear
 }
 
 function managePosts(){
-        let eventoSquare = document.getElementById('eventoSquare');
-        let anotherContainer = document.getElementById('another-container');
-        let myEventListContainer = document.getElementById('myEventListContainer');
-        let searchContainerMyEvents = document.getElementById('mySearchBox');
-        let backButton = document.getElementById('backButton');
+        const eventoSquare = document.getElementById('eventoSquare');
+        const anotherContainer = document.getElementById('another-container');
+        const myEventListContainer = document.getElementById('myEventListContainer');
+        const searchContainerMyEvents = document.getElementById('mySearchBox');
+        const backButton = document.getElementById('backButton');
+        const myFavoriteListContainer = document.getElementById('myFavoriteListContainer');
+        const myPoststext = document.getElementById("myPoststext");
+        const myFavoritesText = document.getElementById("myFavoritesText");
         eventoSquare.style.display = 'none';
         anotherContainer.style.display = 'none';
         myEventListContainer.style.display = 'block';
         searchContainerMyEvents.style.display = 'block';
         backButton.style.display = 'flex';
+        myFavoriteListContainer.style.display = 'block';
+        myPoststext.style.display = 'block';
+        myFavoritesText.style.display = 'block';
+
 }
 
 async function addEvent() {
@@ -398,6 +402,9 @@ async function addEvent() {
 }
     
 async function myPosts() {
+        const textInputValue = localStorage.getItem("information");
+        const outputElement = document.getElementById("output");
+        outputElement.innerHTML = textInputValue;
         const userName = localStorage.getItem("activeUser");
         const userObj = {username: userName};
         const answer = await makeRequest("http://localhost:8003/myEvents", {
@@ -431,8 +438,8 @@ async function myPosts() {
 
 function createList(events) {
         if (events.length === 0){
-                let noEvents = document.getElementById("eventShow");
-                noEvents.textContent = " ";
+                const noEvents = document.getElementById("eventShow");
+                noEvents.textContent = "Sem eventos criados";
         }
         const eventsContainer = document.getElementById("events-container");
       

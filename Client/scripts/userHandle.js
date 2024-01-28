@@ -64,10 +64,10 @@ async function login() {
     }
 }
 
-
+//salvar a descrição do user
 async function saveContent() {
     const information = document.getElementById("information").value;
-    let outputElement = document.getElementById("output");
+    const outputElement = document.getElementById("output");
     outputElement.innerHTML = information;
     document.getElementById("information").value = " ";
     
@@ -111,6 +111,7 @@ function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("login");
     localStorage.removeItem("activeUser");
+    localStorage.removeItem('information');
     window.location.href = "index.html";
 }
 
