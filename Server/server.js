@@ -238,15 +238,13 @@ app.post("/userInfoUpdate", async (req,res) => {
         const information = req.body.information;
         const username = req.body.username;
         const filter = { username: username};
-        console.log(filter);
         const include = { information: information };
-        console.log(include);
     
-        await updateObjectField2("users", filter, include);
+        await updateUserInfo("users", filter, include);
         res.status(200).json({ msg: "Informação adicionada com sucesso" });
     }catch(error){
         console.log("Error interno no servidor no endpoint userInfoUpdate " + error);
-        res.status(500).json({ msg: "Falha ao adicionar o evento" });
+        res.status(500).json({ msg: "Falha ao atualizar"});
     }
 });
 
@@ -256,18 +254,20 @@ app.post("/postInfoUpdate", async (req,res) => {
         if (!userToken){
             return res.status(401).json({msg:"Utilizador não autenticado"});
         }
-        console.log("oi?")
         const information = req.body.name;
         const eventId = req.body._id;
-        console.log(eventId);
-        const include = { name: information };
-        console.log(include);
+        const eventDate = req.body.date;
+        const eventHour = req.body.time;
+        const eventDescription = req.body.description;
+        const eventImage = req.body.imageURL;
+        const eventLocation = req.body.location
+        const include = { name: information, date: eventDate, time: eventHour, location: eventLocation, description: eventDescription, imageURL: eventImage};
     
         await updatePost("events", eventId, include);
         res.status(200).json({ msg: "Informação adicionada com sucesso" });
     }catch(error){
         console.log("Error interno no servidor no endpoint postInfoUpdate " + error);
-        res.status(500).json({ msg: "Falha ao adicionar o evento" });
+        res.status(500).json({ msg: "Falha ao atualizar" });
     }
 });
     
@@ -285,17 +285,6 @@ app.post("/myEvents", async (req, res) => {
         
         const eventsList = await findAll("events", filter);
 
-        //para juntar os eventos na lista de favoritos//
-        const userInfo = await findAll("users", filter);
-        const favoritesList = userInfo[0].events;
-        if (favoritesList.length > 0){
-            for (i = 0; i < favoritesList.length; i++){
-                eventsList.push(await findOneResult("events", {name : favoritesList[i]}));
-            }
-        }
-
-        console.log(favoritesList);
-        //--------------------------------------------//
         return res.status(200).json({ resultSet: eventsList });
     }catch(error){
         console.log("Error interno no servidor no endpoint myEvents " + error);
@@ -303,6 +292,31 @@ app.post("/myEvents", async (req, res) => {
     }  
 });
 
+
+app.post("/myFavorites", async (req, res) => {
+    try{
+        const userToken = verifyToken(req.header('token'));
+        if (!userToken){
+            return res.status(401).json({msg:"Utilizador não autenticado"});
+        } 
+    
+        const username = req.body.username;
+        const filter = { username: username};
+        
+        let finalFavorites = [];
+        const eventsList = await findAll("users", filter);
+        const favoritesList = eventsList[0].events;
+        if (favoritesList.length > 0){
+            for (i = 0; i < favoritesList.length; i++){
+                finalFavorites.push(await findOneResult("events", {name : favoritesList[i]}));
+            }
+        }
+        return res.status(200).json({ resultSet: finalFavorites });
+    }catch(error){
+        console.log("Error interno no servidor no endpoint myFavorites " + error);
+        res.status(500).json({ msg: "Erro interno de servidor" });
+    }  
+});
 
 app.get("/verifyIfUserIsLoggendIn", async(req, res) => {
     try{
@@ -314,7 +328,7 @@ app.get("/verifyIfUserIsLoggendIn", async(req, res) => {
         return res.status(200).json({});
     }catch(error){
         console.log("Error interno no servidor no endpoint verifyIfUserIsLoggendIn " + error);
-        res.status(500).json({ msg: "Falha ao adicionar o evento" });
+        res.status(500).json({ msg: "Erro interno de servidor" });
     }
 })
 
@@ -370,11 +384,11 @@ async function updateObjectField(table, id, value) {
 }
 
 
-async function updateObjectField2(table, filter,  value) {
+async function updateUserInfo(table, filter,  value) {
     const dbConn = new MongoClient(uri);
     try {
         const insert_db = await dbConn.db(database);
-        insert_db.collection(table).updateOne(filter, {$set: { "information": value } })
+        insert_db.collection(table).updateOne(filter, {$set: value })
     } catch (err) {
         console.log(err)
     } finally {
@@ -383,11 +397,11 @@ async function updateObjectField2(table, filter,  value) {
 } 
 
 async function updatePost(table, filter,  value) {
-    console.log(table, filter,  value);
+    console.log(table, filter,  value)
     const dbConn = new MongoClient(uri);
     try {
         const insert_db = await dbConn.db(database);
-        insert_db.collection(table).updateOne({ _id: filter}, {$set: value});
+        insert_db.collection(table).updateOne({ _id: new ObjectId(filter)}, {$set: value});
         console.log("Adicionado com sucesso");
     } catch (err) {
         console.log(err)
@@ -429,7 +443,6 @@ async function findAll(table, filter) {
 
 //Função de delete
 async function deleteEvent(eventName) {
-    console.log(eventName);
     const dbConn = new MongoClient(uri);
 
     try {
