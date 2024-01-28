@@ -375,7 +375,7 @@ async function updateObjectField(table, id, value) {
     const dbConn = new MongoClient(uri);
     try {
         const insert_db = await dbConn.db(database);
-        insert_db.collection(table).updateOne({ _id: id }, { $set: { "name": value } })
+        insert_db.collection(table).updateOne({ _id: id }, { $set: { "events": value } })
     } catch (err) {
         console.log(err)
     } finally {

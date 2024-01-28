@@ -283,7 +283,6 @@ async function addToMyEvents() {
         });
 
         const warning = document.getElementById("warning");
-        warning.textContent = "Evento adicionado aos seus favoritos!";
         
         setTimeout(function(){
                 warning.textContent = "";
