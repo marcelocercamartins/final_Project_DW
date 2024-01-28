@@ -125,15 +125,16 @@ function createMyEventsList(eventsList){
 
             //Botão para levar á página de mais informações
             const moreInfo = document.createElement("div");
+            const deleteEvent = document.createElement("div");
             const editButton = document.getElementById("editButton");
             const saveButton = document.getElementById("saveNewContent");
-            editButton.style.display = "flex";
-            saveButton.style.display = "flex";
-            const deleteEvent = document.createElement("div");
+    
             moreInfo.innerHTML ='<button class="btn btn-primary">Editar</button>'
             deleteEvent.innerHTML ='<button class="btn btn-primary">Apagar</button>'
             moreInfo.addEventListener("click", function () {
-                    myEventDetails(value.name);
+                editButton.style.display = "flex";
+                saveButton.style.display = "flex";
+                myEventDetails(value.name);
             })
 
             deleteEvent.addEventListener("click", function(){
@@ -276,7 +277,9 @@ async function myEventDetails(eventName) {
     document.getElementById('eventHourPopupDiv').innerText = value.time;
     document.getElementById('eventDescriptionPopupDiv').innerText = value.description;
     document.getElementById("eventImagePopup").src = value.imageURL;
-    document.getElementById("locationInput").innerText = value.location;
+    document.getElementById("eventLocation").innerText = value.location;
+    const newImageInput = document.getElementById("newImageInput");
+    newImageInput.value = value.imageURL;
     callMapsAPI(eventLatitude, eventLongitude)
     document.getElementById('overlay').style.display = 'block';
     document.getElementById('popup').style.display = 'block';
@@ -308,7 +311,8 @@ async function deleteMyEvent(eventName) {
         const eventDate = document.getElementById("eventDatePopupDiv").innerHTML;
         const eventHour = document.getElementById("eventHourPopupDiv").innerHTML;
         const eventDescription = document.getElementById("eventDescriptionPopupDiv").innerHTML;
-        const eventLocation = document.getElementById("locationInput").innerHTML;
+        const eventLocation = document.getElementById("eventLocation").innerHTML;
+        // const eventMap = document.getElementById("eventMapAPIDiv").value; 
         const eventId = localStorage.getItem("eventId");
         localStorage.setItem("name", information);
         

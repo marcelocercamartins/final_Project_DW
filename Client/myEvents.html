@@ -162,10 +162,11 @@
       <img id="eventImagePopup" src="" alt="" width="150px" height="150px" contenteditable="false"></div> 
       <input type="url" id="newImageInput" name="newImageInput" placeholder="URL format" style="font-size:13px">
     <div class="event-details" id="eventTitlePopupDiv" contenteditable="false"></div>
+    <div class="event-details" id="eventLocation" contenteditable="false"></div>
     <div class="event-details" id="eventDatePopupDiv" contenteditable="false"></div>
     <div class="event-details" id="eventHourPopupDiv" contenteditable="false"></div>
     <div class="event-details" id="eventDescriptionPopupDiv" contenteditable="false"></div>
-    <div class="event-map" id="eventMapAPIDiv"></div>
+    <div class="event-map" id="eventMapAPIDiv" contenteditable="false"></div>
 </div>
 
 <!-- Footer-->
@@ -188,15 +189,20 @@
         const eventTitle = document.getElementById('eventTitlePopupDiv');
         const eventDate = document.getElementById('eventDatePopupDiv');
         const eventHour= document.getElementById('eventHourPopupDiv');
+        const eventLocation = document.getElementById('eventLocation');
         const eventDescription = document.getElementById('eventDescriptionPopupDiv');
         const eventImage = document.getElementById('eventImagePopup');
         const newEventImage = document.getElementById('newImageInput');
+        const eventMapAPIDiv = document.getElementById('eventMapAPIDiv');
+        
     
         eventTitle.contentEditable = true;
         eventDate.contentEditable = true;
         eventHour.contentEditable = true;
         eventDescription.contentEditable = true;
         eventImage.contentEditable = true;
+        eventLocation.contentEditable = true;
+        eventMapAPIDiv.contentEditable = true;
         newEventImage.style.display = 'flex';
         
   

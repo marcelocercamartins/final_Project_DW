@@ -261,6 +261,7 @@ app.post("/postInfoUpdate", async (req,res) => {
         const eventDescription = req.body.description;
         const eventImage = req.body.imageURL;
         const eventLocation = req.body.location
+        const eventMap = req.body.gps;
         const include = { name: information, date: eventDate, time: eventHour, location: eventLocation, description: eventDescription, imageURL: eventImage};
     
         await updatePost("events", eventId, include);
