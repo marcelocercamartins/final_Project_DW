@@ -163,9 +163,10 @@
       <input type="url" id="newImageInput" name="newImageInput" placeholder="URL format" style="font-size:13px">
     <div class="event-details" id="eventTitlePopupDiv" contenteditable="false"></div>
     <div class="event-details" id="eventLocation" contenteditable="false"></div>
-    <div class="event-details" id="eventDatePopupDiv" contenteditable="false"></div>
+    <div class="event-details" id="eventDatePopupDiv" value="data:" contenteditable="false"></div>
     <div class="event-details" id="eventHourPopupDiv" contenteditable="false"></div>
     <div class="event-details" id="eventDescriptionPopupDiv" contenteditable="false"></div>
+    <input type="text" id="gpsNewInput" name="gpsNewInput" placeholder="38.7673, -9.09381" style="font-size:13px"></input>
     <div class="event-map" id="eventMapAPIDiv" contenteditable="false"></div>
 </div>
 
@@ -194,7 +195,8 @@
         const eventImage = document.getElementById('eventImagePopup');
         const newEventImage = document.getElementById('newImageInput');
         const eventMapAPIDiv = document.getElementById('eventMapAPIDiv');
-        
+        const gpsNewInput = document.getElementById('gpsNewInput');
+
     
         eventTitle.contentEditable = true;
         eventDate.contentEditable = true;
@@ -204,6 +206,7 @@
         eventLocation.contentEditable = true;
         eventMapAPIDiv.contentEditable = true;
         newEventImage.style.display = 'flex';
+        gpsNewInput.style.display = 'flex';
         
   
       });
