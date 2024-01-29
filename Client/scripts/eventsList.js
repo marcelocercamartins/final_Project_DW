@@ -1,4 +1,5 @@
-// função que trata de apresentar os eventos registados não há necessidade de fazer verificação de tokens qualquer um pode ver
+// função que requesita ao servidor a lista de eventos registados e reencaminha a própria para createEventsList
+// Não há necessidade de fazer verificação de tokens qualquer utilizador pode ver (registado ou não)
 async function displayEvents() {
         const answer = await makeRequest("http://localhost:8003/registeredEvents", {
                 method: "GET",
@@ -23,7 +24,8 @@ async function displayEvents() {
         }
 }
 
-
+// função que requesita ao servidor a lista de eventos registados que contenham no nome, data, hora ou localidade o texto pesquisado. Reencaminha depois a lista para createEventsList
+// Não há necessidade de fazer verificação de tokens qualquer utilizador pode ver (registado ou não)
 async function eventSearcher(){
         const searchEvent = document.getElementById("searchBox").value;
           
@@ -56,6 +58,7 @@ async function eventSearcher(){
         }
 }
 
+//Função utilizada para meter a lista retornada pelo endpoint em formato aceitável para createEventsList
 function prepareList(eventsListSearch) {
         const preparedList = { resultSet: [] };
     
@@ -67,7 +70,7 @@ function prepareList(eventsListSearch) {
         return preparedList;
     }
 
-
+//Função utilizada para criar a lista de eventos registados.
 function createEventsList(eventsList){
         const refreshPage = document.getElementById("eventListContainer");
         refreshPage.innerHTML = "";
@@ -152,6 +155,7 @@ function createEventsList(eventsList){
         });
 }
 
+//Função que cria o model com os detalhes do evento escolhido pelo utilizador
 async function eventDetails(eventName) {
         const eventObj = {name: eventName}
 
@@ -217,6 +221,7 @@ function verifyCoordinates(eventCoordinates){
         return 1;
 }
 
+//Função que faz requesito ao servidor para saber se existe um utilizador com log in efetuado      o return é depois utilizado para saber se é mostrado ou não o botão adicionar aos eventos
 async function verifyIfThereIsAUserLoggedIn(){
         const answer = await makeRequest("http://localhost:8003/verifyIfUserIsLoggendIn", {
                 method: "GET",
@@ -235,6 +240,7 @@ async function verifyIfThereIsAUserLoggedIn(){
 
 var map = null;
 
+//Função para esconder o model com os eventDetails
 function hideEventDetails() {
        //reset ao mapa
        try{
@@ -248,6 +254,8 @@ function hideEventDetails() {
         myEvents();
 }
 
+
+//Chamada da API Leaflet para mostrar o mapa com pin na localização do evento
 function callMapsAPI(eventLatitude, eventLongitude) {
         map = L.map('eventMapAPIDiv', {
                 center: [eventLatitude, eventLongitude],
@@ -272,6 +280,7 @@ function callMapsAPI(eventLatitude, eventLongitude) {
         L.marker([eventLatitude, eventLongitude]).addTo(map) 
 }
 
+//Função que requesita ao servidor a adição do eventos a lista de favoritos do utilizador
 async function addToMyEvents() {
         const eventName = document.getElementById("eventTitlePopupDiv").innerText;
         const eventObj = { event: eventName }
