@@ -11086,7 +11086,7 @@ header.masthead .bg-circle-4 {
     text-align: center;
   }
 
-  .myEventListContainer, #mySearchBox, #backButton, #newImageInput, #myFavoriteListContainer{
+  .myEventListContainer, #mySearchBox, #backButton, #newImageInput, #myFavoriteListContainer, #gpsNewInput{
     display: none;
   }
   
