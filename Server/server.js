@@ -201,8 +201,6 @@ app.post("/addEvent", async (req, res) => {
         if (!userToken){
             return res.status(401).json({msg:"Utilizador não autenticado"});
         } 
-        
-        console.log("Received Data:", req.body);
         const title = req.body.name;
         const date = req.body.date;
         const time = req.body.time;
@@ -261,8 +259,8 @@ app.post("/postInfoUpdate", async (req,res) => {
         const eventDescription = req.body.description;
         const eventImage = req.body.imageURL;
         const eventLocation = req.body.location
-        const eventMap = req.body.gps;
-        const include = { name: information, date: eventDate, time: eventHour, location: eventLocation, description: eventDescription, imageURL: eventImage};
+        const gpsNew = req.body.gps;
+        const include = {name: information, date: eventDate, time: eventHour, location: eventLocation, description: eventDescription, imageURL: eventImage, gps: gpsNew};
     
         await updatePost("events", eventId, include);
         res.status(200).json({ msg: "Informação adicionada com sucesso" });
@@ -297,6 +295,7 @@ app.post("/myEvents", async (req, res) => {
 app.post("/myFavorites", async (req, res) => {
     try{
         const userToken = verifyToken(req.header('token'));
+
         if (!userToken){
             return res.status(401).json({msg:"Utilizador não autenticado"});
         } 
@@ -309,7 +308,10 @@ app.post("/myFavorites", async (req, res) => {
         const favoritesList = eventsList[0].events;
         if (favoritesList.length > 0){
             for (i = 0; i < favoritesList.length; i++){
-                finalFavorites.push(await findOneResult("events", {name : favoritesList[i]}));
+                let favorites = await verifyCreator(username,favoritesList[i]);
+                if (favorites == 1 ){
+                    finalFavorites.push(await findOneResult("events", {name : favoritesList[i]}));
+                }
             }
         }
         return res.status(200).json({ resultSet: finalFavorites });
@@ -318,6 +320,15 @@ app.post("/myFavorites", async (req, res) => {
         res.status(500).json({ msg: "Erro interno de servidor" });
     }  
 });
+
+async function verifyCreator(username, eventName){
+    let event = await findOneResult("events", {name: eventName});
+    if (event.username == username){
+        return 0;
+    }else{
+        return 1;
+    }
+}
 
 app.get("/verifyIfUserIsLoggendIn", async(req, res) => {
     try{
