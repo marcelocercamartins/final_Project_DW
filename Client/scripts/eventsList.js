@@ -121,7 +121,7 @@ function createEventsList(eventsList){
                 rightDiv.style.display = "flex";
                 rightDiv.style.alignItems = "center";
                 rightDiv.style.overflow = "hidden";  
-                rightDiv.innerHTML = value.name + "<br>" + value.date + "<br>" + value.time + "<br>" + value.location
+                rightDiv.innerHTML = "<div><strong>" + value.name + "</strong><br>" + value.date  + "<br>" + value.time + "<br>" + value.location + "</div>";
                 
                 //ajusta os elementos em página web
                 window.addEventListener('resize', function () {
@@ -173,10 +173,13 @@ async function eventDetails(eventName) {
                 
                         //alteração do conteudo do popup conforme o evento. resultSet é o objeto que vem da base de dados com as informações do evento
                         document.getElementById('eventTitlePopupDiv').innerText = eventInfo.resultSet.name;
+                        document.getElementById('eventTitlePopupDiv').style.color = "hotpink";
+                        document.getElementById('eventTitlePopupDiv').style.fontWeight = "bold";
                         document.getElementById('eventDatePopupDiv').innerText = eventInfo.resultSet.date;
                         document.getElementById('eventHourPopupDiv').innerText = eventInfo.resultSet.time;
                         document.getElementById('eventDescriptionPopupDiv').innerText = eventInfo.resultSet.description;
                         document.getElementById("eventImagePopup").src = eventInfo.resultSet.imageURL;
+                        
                         
                         const needForMap = verifyCoordinates(eventCoordinates);
                 
