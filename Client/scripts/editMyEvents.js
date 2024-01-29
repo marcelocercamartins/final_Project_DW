@@ -129,7 +129,7 @@ function createMyEventsList(eventsList){
             const editButton = document.getElementById("editButton");
             const saveButton = document.getElementById("saveNewContent");
     
-            moreInfo.innerHTML ='<button class="btn btn-primary">Editar</button>'
+            moreInfo.innerHTML ='<button class="btn btn-primary">Ver/Editar</button>'
             deleteEvent.innerHTML ='<button class="btn btn-primary">Apagar</button>'
             moreInfo.addEventListener("click", function () {
                 editButton.style.display = "flex";
@@ -279,7 +279,10 @@ async function myEventDetails(eventName) {
     document.getElementById("eventImagePopup").src = value.imageURL;
     document.getElementById("eventLocation").innerText = value.location;
     const newImageInput = document.getElementById("newImageInput");
+    const gpsNewInput = document.getElementById("gpsNewInput");
     newImageInput.value = value.imageURL;
+    gpsNewInput.value = eventLatitude.toString() + ', ' + eventLongitude.toString();
+
     callMapsAPI(eventLatitude, eventLongitude)
     document.getElementById('overlay').style.display = 'block';
     document.getElementById('popup').style.display = 'block';
@@ -305,19 +308,22 @@ async function deleteMyEvent(eventName) {
 
     async function saveNewContent() {
         const newImageInput = document.getElementById("newImageInput");
+        const gpsNewInput = document.getElementById("gpsNewInput");
         newImageInput.style.display = "none";
+        gpsNewInput.style.display = "none";
         const eventImage = newImageInput.value;
         const information = document.getElementById("eventTitlePopupDiv").innerHTML;
         const eventDate = document.getElementById("eventDatePopupDiv").innerHTML;
         const eventHour = document.getElementById("eventHourPopupDiv").innerHTML;
         const eventDescription = document.getElementById("eventDescriptionPopupDiv").innerHTML;
         const eventLocation = document.getElementById("eventLocation").innerHTML;
+        const gpsNew = gpsNewInput.value;
         // const eventMap = document.getElementById("eventMapAPIDiv").value; 
         const eventId = localStorage.getItem("eventId");
         localStorage.setItem("name", information);
         
 
-        const userObj = {name: information, _id: eventId, date: eventDate, time: eventHour, location: eventLocation, description: eventDescription, imageURL: eventImage};
+        const userObj = {name: information, _id: eventId, date: eventDate, time: eventHour, location: eventLocation, description: eventDescription, imageURL: eventImage, gps: gpsNew};
         
         const answer = await makeRequest("http://localhost:8003/postInfoUpdate", {
             method: "POST",
@@ -330,7 +336,3 @@ async function deleteMyEvent(eventName) {
         await answer.json();
 
   }  
-
-
-
-
