@@ -137,7 +137,8 @@
       <textarea id="descriptionInput" name="descriptionInput" placeholder="Descrição do evento" style="font-size:13px"></textarea>
       <br>
       
-      <button class="btn btn-primary" type="submit" onclick="addEvent()">Criar</button>
+      <div id="formFooter"><p id ="errorMessage"></p></div>
+      <button class="btn btn-primary" type="submit" onclick="validateNewEventInfo()">Criar</button>
       <a class="btn btn-primary" href="myEvents.html">Voltar</a>
     
   </div>

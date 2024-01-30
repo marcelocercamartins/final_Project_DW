@@ -384,6 +384,8 @@ async function addEvent() {
         const image = document.getElementById("imageInput").value;
         const username = localStorage.getItem("activeUser"); 
 
+
+        
         const postObj = {name: title, ageAdvised: ageAdvised, date: date, time:time, location: location, gps: gps, description: description, imageURL: image, username: username};
        
         const answer = await makeRequest("http://localhost:8003/addEvent", {
@@ -413,7 +415,34 @@ async function addEvent() {
         }    
     
 }
+
+async function validateNewEventInfo() {
+        const title = document.getElementById("titleInput").value;
+        const date = document.getElementById("dateInput").value;
+        const time = document.getElementById("hourInput").value;
+        const location = document.getElementById("locationInput").value;
+        const gps = document.getElementById("gpsInput").value;
     
+        if (EmptyField(title, "Título do evento não se encontra preenchido!") ||
+            EmptyField(date, "Data não se encontra preenchido!") ||
+            EmptyField(time, "Hora não se encontra preenchido!") ||
+            EmptyField(location, "Localização não se encontra preenchido!") ||
+            EmptyField(gps, "Coordenadas não se encontra preenchido!")) {
+            return;
+        }
+
+        addEvent();
+}
+    
+function EmptyField(value, errorMessage) {
+        if (value.trim() === "") {
+            document.getElementById("errorMessage").innerHTML = errorMessage;
+            return true;
+        }
+        return false;
+    }
+
+
 async function myPosts() {
         const textInputValue = localStorage.getItem("information");
         const outputElement = document.getElementById("output");
