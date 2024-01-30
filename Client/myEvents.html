@@ -115,10 +115,13 @@
       <input type="url" id="imageInput" name="imageInput" placeholder="URL format" style="font-size:13px" value="https://cdn-cjhkj.nitrocdn.com/krXSsXVqwzhduXLVuGLToUwHLNnSxUxO/assets/images/optimized/rev-a53fc9c/spotme.com/wp-content/uploads/2020/07/Hero-1.jpg">
       <br>
       <label for="titleInput">Título do evento:</label>
-      <input type="text" id="titleInput" name="titleInput" placeholder="Title" style="font-size:13px">
+      <input type="text" id="titleInput" name="titleInput" placeholder="Titulo:" style="font-size:13px">
+      <br>
+      <label for="idadeInput">Classificação etária:</label>
+      <input type="text" id="idadeInput" name="idadeInput" placeholder="+16" style="font-size:13px" value="+12">
       <br>
       <label for="dateInput">Data:</label><br>
-      <input type="date" id="dateInput" name="dateInput" style="font-size:13px" required>
+      <input type="date" id="dateInput" name="dateInput" style="font-size:13px">
       <br>
       <label for="hourInput">Hora:</label><br>
       <input type="text" id="hourInput" name="hourInput" placeholder="00h00m" style="font-size:13px">
@@ -162,6 +165,7 @@
       <img id="eventImagePopup" src="" alt="" width="150px" height="150px" contenteditable="false"></div> 
       <input type="url" id="newImageInput" name="newImageInput" placeholder="URL format" style="font-size:13px">
     <div class="event-details" id="eventTitlePopupDiv" contenteditable="false"></div>
+    <div class="event-details" id="ageAdvised" contenteditable="false"></div>
     <div class="event-details" id="eventLocation" contenteditable="false"></div>
     <div class="event-details" id="eventDatePopupDiv" value="data:" contenteditable="false"></div>
     <div class="event-details" id="eventHourPopupDiv" contenteditable="false"></div>
@@ -188,6 +192,7 @@
       
       document.getElementById('editButton').addEventListener('click', function() {
         const eventTitle = document.getElementById('eventTitlePopupDiv');
+        const ageAdvised = document.getElementById('ageAdvised');
         const eventDate = document.getElementById('eventDatePopupDiv');
         const eventHour= document.getElementById('eventHourPopupDiv');
         const eventLocation = document.getElementById('eventLocation');
@@ -196,6 +201,7 @@
         const newEventImage = document.getElementById('newImageInput');
         const eventMapAPIDiv = document.getElementById('eventMapAPIDiv');
         const gpsNewInput = document.getElementById('gpsNewInput');
+        
 
     
         eventTitle.contentEditable = true;
@@ -205,6 +211,7 @@
         eventImage.contentEditable = true;
         eventLocation.contentEditable = true;
         eventMapAPIDiv.contentEditable = true;
+        ageAdvised.contentEditable = true;
         newEventImage.style.display = 'flex';
         gpsNewInput.style.display = 'flex';
         

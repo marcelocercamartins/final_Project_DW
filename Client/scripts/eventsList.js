@@ -124,16 +124,16 @@ function createEventsList(eventsList){
                 rightDiv.style.display = "flex";
                 rightDiv.style.alignItems = "center";
                 rightDiv.style.overflow = "hidden";  
-                rightDiv.innerHTML = "<div><strong>" + value.name + "</strong><br>" + value.date  + "<br>" + value.time + "<br>" + value.location + "</div>";
-                
-                //ajusta os elementos em página web
-                window.addEventListener('resize', function () {
-                        if (window.innerWidth < 700) { 
-                            rightDiv.innerHTML = value.name + "<br>" + value.date + "<br>" + value.time;
-                        } else {
-                            rightDiv.innerHTML = value.name + "<br>" + value.date + "<br>" + value.time + "<br>" + value.location;
-                        }
-                });
+                rightDiv.innerHTML = "<div><strong>" + value.name + " / " + value.ageAdvised + "</strong><br>" + value.date  + "<br>" + value.time + "<br>" + value.location + "</div>"
+            
+            //ajusta os elementos em página web
+            window.addEventListener('resize', function () {
+                    if (window.innerWidth < 700) { 
+                        rightDiv.innerHTML = value.name + "<br>" + value.date + "<br>" + value.ageAdvised;
+                    } else {
+                        rightDiv.innerHTML = value.name + "<br>" + value.date  + "<br>" + value.ageAdvised + "<br>" + value.location;
+                    }
+            });
 
 
                 
@@ -375,6 +375,7 @@ function managePosts(){
 async function addEvent() {
         window.location.href = "myEvents.html";
         const title = document.getElementById("titleInput").value;
+        const ageAdvised = document.getElementById("idadeInput").value;
         const date = document.getElementById("dateInput").value;
         const time = document.getElementById("hourInput").value;
         const location = document.getElementById("locationInput").value;
@@ -382,7 +383,8 @@ async function addEvent() {
         const description = document.getElementById("descriptionInput").value;
         const image = document.getElementById("imageInput").value;
         const username = localStorage.getItem("activeUser"); 
-        const postObj = {name: title, date: date, time:time, location: location, gps: gps, description: description, imageURL: image, username: username};
+
+        const postObj = {name: title, ageAdvised: ageAdvised, date: date, time:time, location: location, gps: gps, description: description, imageURL: image, username: username};
        
         const answer = await makeRequest("http://localhost:8003/addEvent", {
             method: "POST",
