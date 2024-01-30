@@ -209,8 +209,9 @@ app.post("/addEvent", async (req, res) => {
         const description = req.body.description;
         const image= req.body.imageURL;
         const username = req.body.username;
+        const ageAdvised = req.body.ageAdvised;
 
-        const insertValue = {name: title, date: date, time:time, location: location, gps: gps, description: description, imageURL: image, username: username};
+        const insertValue = {name: title, ageAdvised: ageAdvised, date: date, time:time, location: location, gps: gps, description: description, imageURL: image, username: username};
         await insertLinesOnDatabase("events", insertValue);
         //meter logo o evento criado na lista de favoritos do utilizador//
         const userInfo = await findOneResult("users", { username: username });
@@ -254,13 +255,14 @@ app.post("/postInfoUpdate", async (req,res) => {
         }
         const information = req.body.name;
         const eventId = req.body._id;
+        const ageAdvised = req.body.ageAdvised;
         const eventDate = req.body.date;
         const eventHour = req.body.time;
         const eventDescription = req.body.description;
         const eventImage = req.body.imageURL;
         const eventLocation = req.body.location
         const gpsNew = req.body.gps;
-        const include = {name: information, date: eventDate, time: eventHour, location: eventLocation, description: eventDescription, imageURL: eventImage, gps: gpsNew};
+        const include = {name: information, ageAdvised: ageAdvised, date: eventDate, time: eventHour, location: eventLocation, description: eventDescription, imageURL: eventImage, gps: gpsNew};
     
         await updatePost("events", eventId, include);
         res.status(200).json({ msg: "Informação adicionada com sucesso" });
@@ -382,7 +384,7 @@ async function insertLinesOnDatabase(table, valuetToInsert) {
         await dbConn.close();
     }
 }
-//REDUNDANCIA A TRABALHAR, mas por agora funca
+
 async function updateObjectField(table, id, value) {
     const dbConn = new MongoClient(uri);
     try {
@@ -462,6 +464,7 @@ async function deleteEvent(eventName) {
 
         // Delete the event from the events collection
         const deleteResult = await dbConn.db(database).collection("events").deleteOne({ name: eventName });
+
         console.log(`${deleteResult.deletedCount} evento apagado`);
 
         // Verificar se o evento foi apagado
