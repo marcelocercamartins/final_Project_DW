@@ -263,7 +263,7 @@ app.post("/postInfoUpdate", async (req,res) => {
         const eventLocation = req.body.location
         const gpsNew = req.body.gps;
         const include = {name: information, ageAdvised: ageAdvised, date: eventDate, time: eventHour, location: eventLocation, description: eventDescription, imageURL: eventImage, gps: gpsNew};
-    
+        console.log(include)
         await updatePost("events", eventId, include);
         res.status(200).json({ msg: "Informação adicionada com sucesso" });
     }catch(error){

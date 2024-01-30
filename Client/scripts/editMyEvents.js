@@ -310,12 +310,13 @@ async function deleteMyEvent(eventName) {
   }
 
     async function saveNewContent() {
+        console.log
         const newImageInput = document.getElementById("newImageInput");
         const gpsNewInput = document.getElementById("gpsNewInput");
         newImageInput.style.display = "none";
         gpsNewInput.style.display = "none";
         const eventImage = newImageInput.value;
-        const information = document.getElementById("eventfTitlePopupDiv").innerHTML;
+        const information = document.getElementById("eventTitlePopupDiv").innerHTML;
         const eventDate = document.getElementById("eventDatePopupDiv").innerHTML;
         const eventHour = document.getElementById("eventHourPopupDiv").innerHTML;
         const eventDescription = document.getElementById("eventDescriptionPopupDiv").innerHTML;
@@ -328,7 +329,7 @@ async function deleteMyEvent(eventName) {
         
 
         const userObj = {name: information, ageAdvised: ageAdvised, _id: eventId, date: eventDate, time: eventHour, location: eventLocation, description: eventDescription, imageURL: eventImage, gps: gpsNew};
-        
+        console.log(userObj)
         const answer = await makeRequest("http://localhost:8003/postInfoUpdate", {
             method: "POST",
             body: JSON.stringify(userObj),
