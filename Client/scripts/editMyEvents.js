@@ -107,14 +107,14 @@ function createMyEventsList(eventsList){
             rightDiv.style.display = "flex";
             rightDiv.style.alignItems = "center";
             rightDiv.style.overflow = "hidden";  
-            rightDiv.innerHTML = "<div><strong>" + value.name + "</strong><br>" + value.date  + "<br>" + value.time + "<br>" + value.location + "</div>"
+            rightDiv.innerHTML = "<div><strong>" + value.name + " / " + value.ageAdvised + "</strong><br>" + value.date  + "<br>" + value.time + "<br>" + value.location + "</div>"
             
             //ajusta os elementos em página web
             window.addEventListener('resize', function () {
                     if (window.innerWidth < 700) { 
-                        rightDiv.innerHTML = value.name + "<br>" + value.date + "<br>" + value.time;
+                        rightDiv.innerHTML = value.name + "<br>" + value.date + "<br>" + value.ageAdvised;
                     } else {
-                        rightDiv.innerHTML = value.name + "<br>" + value.date  + "<br>" + value.time + "<br>" + value.location;
+                        rightDiv.innerHTML = value.name + "<br>" + value.date  + "<br>" + value.ageAdvised + "<br>" + value.location;
                     }
             });
 
@@ -211,14 +211,14 @@ function createMyEventsFavorite(eventsList){
             rightDiv.style.display = "flex";
             rightDiv.style.alignItems = "center";
             rightDiv.style.overflow = "hidden";  
-            rightDiv.innerHTML = "<div><strong>" + value.name + "</strong><br>" + value.date  + "<br>" + value.time + "<br>" + value.location + "</div>";
+            rightDiv.innerHTML = "<div><strong>" + value.name + " / " + value.ageAdvised + "</strong><br>" + value.date  + "<br>" + value.time + "<br>" + value.location + "</div>"
             
             //ajusta os elementos em página web
             window.addEventListener('resize', function () {
                     if (window.innerWidth < 700) { 
-                        rightDiv.innerHTML = value.name + "<br>" + value.date + "<br>" + value.time;
+                        rightDiv.innerHTML = value.name + "<br>" + value.date + "<br>" + value.ageAdvised;
                     } else {
-                        rightDiv.innerHTML = value.name + "<br>" + value.date  + "<br>" + value.time + "<br>" + value.location;
+                        rightDiv.innerHTML = value.name + "<br>" + value.date  + "<br>" + value.ageAdvised + "<br>" + value.location;
                     }
             });
 
@@ -270,14 +270,17 @@ async function myEventDetails(eventName) {
         // rightDiv.innerHTML = value.name + "<br>" + value.date  + "<br>" + value.time + "<br>" + value.location;
     localStorage.setItem("eventId", value._id);
     eventTitlePopupDiv = document.getElementById('eventTitlePopupDiv');
+    const ageAdvised = document.getElementById("ageAdvised");
     eventTitlePopupDiv.innerText = value.name;
     eventTitlePopupDiv.style.fontWeight = "bold";
     eventTitlePopupDiv.style.color = "hotpink";
+    ageAdvised.style.fontWeight = "bold";
     document.getElementById('eventDatePopupDiv').innerText = value.date;
     document.getElementById('eventHourPopupDiv').innerText = value.time;
     document.getElementById('eventDescriptionPopupDiv').innerText = value.description;
     document.getElementById("eventImagePopup").src = value.imageURL;
     document.getElementById("eventLocation").innerText = value.location;
+    ageAdvised.innerText = value.ageAdvised;
     const newImageInput = document.getElementById("newImageInput");
     const gpsNewInput = document.getElementById("gpsNewInput");
     newImageInput.value = value.imageURL;
@@ -312,18 +315,19 @@ async function deleteMyEvent(eventName) {
         newImageInput.style.display = "none";
         gpsNewInput.style.display = "none";
         const eventImage = newImageInput.value;
-        const information = document.getElementById("eventTitlePopupDiv").innerHTML;
+        const information = document.getElementById("eventfTitlePopupDiv").innerHTML;
         const eventDate = document.getElementById("eventDatePopupDiv").innerHTML;
         const eventHour = document.getElementById("eventHourPopupDiv").innerHTML;
         const eventDescription = document.getElementById("eventDescriptionPopupDiv").innerHTML;
         const eventLocation = document.getElementById("eventLocation").innerHTML;
+        const ageAdvised = document.getElementById("ageAdvised").innerHTML;
         const gpsNew = gpsNewInput.value;
         // const eventMap = document.getElementById("eventMapAPIDiv").value; 
         const eventId = localStorage.getItem("eventId");
         localStorage.setItem("name", information);
         
 
-        const userObj = {name: information, _id: eventId, date: eventDate, time: eventHour, location: eventLocation, description: eventDescription, imageURL: eventImage, gps: gpsNew};
+        const userObj = {name: information, ageAdvised: ageAdvised, _id: eventId, date: eventDate, time: eventHour, location: eventLocation, description: eventDescription, imageURL: eventImage, gps: gpsNew};
         
         const answer = await makeRequest("http://localhost:8003/postInfoUpdate", {
             method: "POST",
